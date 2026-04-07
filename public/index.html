@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Workout Tracker</title>
+  <link rel="stylesheet" href="styles/main.css" />
+</head>
+<body>
+  <div class="grain"></div>
+  <header class="topbar">
+    <a href="index.html" class="brand">IRON LOG</a>
+    <nav class="nav">
+      <a href="index.html">Dashboard</a>
+      <a href="workout.html">New Workout</a>
+      <a href="history.html">History</a>
+      <a href="progress.html">Progress</a>
+    </nav>
+  </header>
+
+  <main class="shell">
+    <section class="hero-panel hero-grid">
+      <div>
+        <p class="eyebrow">Structured training log</p>
+        <h1>Track the work.<br />Own the PR.</h1>
+        <p class="hero-copy">
+          Log full sessions, save sets into a real database, and let the app show you exactly when your strength
+          breaks past the old ceiling.
+        </p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="workout.html">Log today’s workout</a>
+          <a class="button button-ghost" href="progress.html">View progress</a>
+        </div>
+      </div>
+      <div class="hero-stat-stack">
+        <div class="mini-panel accent-panel">
+          <p class="mini-label">Current mode</p>
+          <p class="mini-value">Lift • Save • Review</p>
+        </div>
+        <div class="mini-panel pr-mini-panel">
+          <p class="mini-label">Version 2 focus</p>
+          <p class="mini-value">PR feedback, cleaner wins, better motivation</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats-grid" id="statsGrid">
+      <article class="stat-card">
+        <p class="stat-label">Total workouts</p>
+        <p class="stat-value" id="totalWorkouts">0</p>
+      </article>
+      <article class="stat-card">
+        <p class="stat-label">Exercise library</p>
+        <p class="stat-value" id="totalExercises">0</p>
+      </article>
+      <article class="stat-card">
+        <p class="stat-label">Logged sets</p>
+        <p class="stat-value" id="totalSets">0</p>
+      </article>
+      <article class="stat-card pr-best-card">
+        <p class="stat-label">Total PRs</p>
+        <p class="stat-value" id="totalPrs">0</p>
+      </article>
+      <article class="stat-card">
+        <p class="stat-label">Last workout</p>
+        <p class="stat-value stat-small" id="lastWorkoutDate">No data yet</p>
+      </article>
+    </section>
+
+    <section class="content-grid two-columns">
+      <article class="panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Recent sessions</p>
+            <h2>Workout history preview</h2>
+          </div>
+          <a class="text-link" href="history.html">Open full history</a>
+        </div>
+        <div id="recentWorkouts" class="stack-list empty-message">No workouts yet. Start with your first session.</div>
+      </article>
+
+      <article class="panel pr-panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Recent PRs</p>
+            <h2>Latest breakthroughs</h2>
+          </div>
+          <a class="text-link" href="progress.html">Open progress</a>
+        </div>
+        <div id="recentPrs" class="stack-list empty-message">No PRs yet. Keep logging.</div>
+      </article>
+
+      <article class="panel full-span">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Quick launch</p>
+            <h2>What you can do next</h2>
+          </div>
+        </div>
+        <div class="quick-actions three-up">
+          <a class="quick-card" href="workout.html">
+            <span class="quick-number">01</span>
+            <div>
+              <h3>Log a workout</h3>
+              <p>Capture your session while the details are still fresh.</p>
+            </div>
+          </a>
+          <a class="quick-card" href="progress.html">
+            <span class="quick-number">02</span>
+            <div>
+              <h3>Check a graph</h3>
+              <p>See whether your top weight and total volume are moving.</p>
+            </div>
+          </a>
+          <a class="quick-card" href="history.html">
+            <span class="quick-number">03</span>
+            <div>
+              <h3>Review old sessions</h3>
+              <p>Look back at what you actually did, not what you think you did.</p>
+            </div>
+          </a>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script src="scripts/shared.js"></script>
+  <script src="scripts/dashboard.js"></script>
+</body>
+</html>

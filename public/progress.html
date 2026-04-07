@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Progress | Workout Tracker</title>
+  <link rel="stylesheet" href="styles/main.css" />
+</head>
+<body>
+  <div class="grain"></div>
+  <header class="topbar">
+    <a href="index.html" class="brand">IRON LOG</a>
+    <nav class="nav">
+      <a href="index.html">Dashboard</a>
+      <a href="workout.html">New Workout</a>
+      <a href="history.html">History</a>
+      <a href="progress.html">Progress</a>
+    </nav>
+  </header>
+
+  <main class="shell">
+    <section class="page-intro">
+      <p class="eyebrow">Progress lens</p>
+      <h1>Exercise progress</h1>
+      <p class="hero-copy">Choose one lift and look at the line instead of relying on vague gym memories.</p>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">Filter</p>
+          <h2>Select an exercise</h2>
+        </div>
+      </div>
+      <div class="filter-row">
+        <label class="field grow-field">
+          <span>Exercise</span>
+          <select id="exerciseSelect"></select>
+        </label>
+      </div>
+    </section>
+
+    <section class="stats-grid progress-stats">
+      <article class="stat-card">
+        <p class="stat-label">Tracked sessions</p>
+        <p class="stat-value" id="trackedSessions">0</p>
+      </article>
+      <article class="stat-card pr-best-card">
+        <p class="stat-label">All-time best</p>
+        <p class="stat-value" id="bestWeight">0</p>
+      </article>
+      <article class="stat-card">
+        <p class="stat-label">Best volume</p>
+        <p class="stat-value" id="bestVolume">0</p>
+      </article>
+      <article class="stat-card">
+        <p class="stat-label">PR date</p>
+        <p class="stat-value stat-small" id="bestWeightDate">No data yet</p>
+      </article>
+      <article class="stat-card">
+        <p class="stat-label">Latest entry</p>
+        <p class="stat-value stat-small" id="latestEntry">No data yet</p>
+      </article>
+    </section>
+
+    <section class="panel highlight-panel">
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">Current top mark</p>
+          <h2>All-time best highlight</h2>
+        </div>
+      </div>
+      <div id="bestLiftHighlight" class="empty-message">Choose an exercise to load progress.</div>
+    </section>
+
+    <section class="content-grid two-columns">
+      <article class="panel chart-panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Line graph</p>
+            <h2>Top weight over time</h2>
+          </div>
+        </div>
+        <div class="chart-wrap"><canvas id="weightChart"></canvas></div>
+      </article>
+
+      <article class="panel chart-panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Line graph</p>
+            <h2>Volume over time</h2>
+          </div>
+        </div>
+        <div class="chart-wrap"><canvas id="volumeChart"></canvas></div>
+      </article>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">Exact detail</p>
+          <h2>Recent entries</h2>
+        </div>
+      </div>
+      <div id="progressHistory" class="stack-list empty-message">Choose an exercise to load progress.</div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="scripts/shared.js"></script>
+  <script src="scripts/progress.js"></script>
+</body>
+</html>

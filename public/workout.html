@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>New Workout | Workout Tracker</title>
+  <link rel="stylesheet" href="styles/main.css" />
+</head>
+<body>
+  <div class="grain"></div>
+  <header class="topbar">
+    <a href="index.html" class="brand">IRON LOG</a>
+    <nav class="nav">
+      <a href="index.html">Dashboard</a>
+      <a href="workout.html">New Workout</a>
+      <a href="history.html">History</a>
+      <a href="progress.html">Progress</a>
+    </nav>
+  </header>
+
+  <main class="shell">
+    <section class="page-intro">
+      <p class="eyebrow">Session builder</p>
+      <h1>Log a workout</h1>
+      <p class="hero-copy">Add your session, stack your exercises in order, and save every set properly.</p>
+    </section>
+
+    <form id="workoutForm" class="content-grid two-columns-uneven">
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Session details</p>
+            <h2>Workout basics</h2>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <label class="field">
+            <span>Workout title</span>
+            <input type="text" id="workoutTitle" placeholder="Push Day" required />
+          </label>
+
+          <label class="field">
+            <span>Date</span>
+            <input type="date" id="workoutDate" required />
+          </label>
+        </div>
+
+        <label class="field">
+          <span>Notes</span>
+          <textarea id="workoutNotes" rows="4" placeholder="Energy, rest times, what felt strong, what felt rough..."></textarea>
+        </label>
+
+        <div class="form-status" id="formStatus">Ready when you are.</div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Live build</p>
+            <h2>Exercises and sets</h2>
+          </div>
+          <button type="button" class="button button-secondary" id="addExerciseButton">Add exercise</button>
+        </div>
+
+        <div id="exerciseList" class="exercise-list"></div>
+
+        <div class="form-actions sticky-actions">
+          <button type="submit" class="button button-primary">Save workout</button>
+        </div>
+      </section>
+    </form>
+  </main>
+
+  <template id="exerciseTemplate">
+    <article class="exercise-card">
+      <div class="exercise-card-header">
+        <div>
+          <p class="mini-label">Exercise block</p>
+          <h3 class="exercise-title">New exercise</h3>
+        </div>
+        <button type="button" class="icon-button remove-exercise-button">Remove</button>
+      </div>
+
+      <div class="form-grid">
+        <label class="field">
+          <span>Exercise</span>
+          <select class="exercise-select"></select>
+        </label>
+
+        <label class="field">
+          <span>Exercise notes</span>
+          <input type="text" class="exercise-notes" placeholder="Tempo, grip, machine used..." />
+        </label>
+      </div>
+
+      <div class="custom-exercise-grid hidden">
+        <div class="form-grid">
+          <label class="field">
+            <span>Custom exercise name</span>
+            <input type="text" class="custom-name" placeholder="Cable Row" />
+          </label>
+          <label class="field">
+            <span>Muscle group</span>
+            <input type="text" class="custom-muscle-group" placeholder="Back" />
+          </label>
+        </div>
+
+        <label class="field">
+          <span>Category</span>
+          <input type="text" class="custom-category" placeholder="Pull" />
+        </label>
+      </div>
+
+      <div class="set-list"></div>
+
+      <button type="button" class="button button-ghost add-set-button">Add set</button>
+    </article>
+  </template>
+
+  <template id="setTemplate">
+    <div class="set-row">
+      <div class="set-badge">Set <span class="set-number"></span></div>
+      <label class="field compact-field">
+        <span>Weight</span>
+        <input type="number" class="set-weight" min="0" step="0.5" placeholder="60" />
+      </label>
+      <label class="field compact-field">
+        <span>Reps</span>
+        <input type="number" class="set-reps" min="1" step="1" placeholder="8" />
+      </label>
+      <label class="field compact-field stretch-field">
+        <span>Notes</span>
+        <input type="text" class="set-notes" placeholder="Paused reps, hard lockout..." />
+      </label>
+      <button type="button" class="icon-button remove-set-button">Remove</button>
+    </div>
+  </template>
+
+  <script src="scripts/shared.js"></script>
+  <script src="scripts/workout.js"></script>
+</body>
+</html>

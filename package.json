@@ -1,0 +1,22 @@
+{
+  "name": "workout-tracker",
+  "version": "1.0.0",
+  "description": "Workout progress tracker with Express, SQLite, and charts.",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "node --watch server/server.js"
+  },
+  "keywords": [
+    "workout",
+    "tracker",
+    "express",
+    "sqlite"
+  ],
+  "author": "psyphix-shinoske",
+  "license": "ISC",
+  "dependencies": {
+    "better-sqlite3": "^12.4.1",
+    "express": "^5.1.0"
+  }
+}

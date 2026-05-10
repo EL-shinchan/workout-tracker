@@ -1773,3 +1773,33 @@ body.users-light-page #usersStatus {
   border: 1px solid rgba(38, 49, 71, 0.08);
   box-shadow: 0 14px 40px rgba(46, 57, 89, 0.1);
 }
+
+.login-shell {
+  min-height: 100vh;
+  width: min(520px, calc(100% - 28px));
+  margin: 0 auto;
+  display: grid;
+  place-items: center;
+  padding: 28px 0;
+}
+
+.login-card {
+  width: 100%;
+  padding: 30px;
+  border-radius: 32px;
+  background:
+    radial-gradient(circle at 92% 8%, rgba(102, 205, 255, 0.32), transparent 34%),
+    radial-gradient(circle at 8% 95%, rgba(255, 190, 116, 0.36), transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(247, 251, 255, 0.9));
+  border: 1px solid rgba(38, 49, 71, 0.1);
+  box-shadow: 0 26px 90px rgba(46, 57, 89, 0.18);
+}
+
+.login-card h1 {
+  color: #172033;
+  font-size: clamp(56px, 13vw, 86px);
+}
+
+.login-card .button {
+  width: 100%;
+}

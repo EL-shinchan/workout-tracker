@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login | Iron Log</title>
+  <meta name="theme-color" content="#ff7a1a" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/icon-192.svg" />
+  <link rel="stylesheet" href="styles/main.css" />
+</head>
+<body class="workout-light-page login-page">
+  <div class="grain"></div>
+  <main class="login-shell">
+    <section class="login-card">
+      <p class="eyebrow">Iron Log</p>
+      <h1>Welcome back</h1>
+      <p class="hero-copy">Log in as Eddie or Jason to keep workouts separate.</p>
+
+      <form id="loginForm" class="config-form">
+        <label class="field">
+          <span>User</span>
+          <select id="loginName" required>
+            <option value="Eddie">Eddie</option>
+            <option value="Jason">Jason</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Password</span>
+          <input type="password" id="loginPassword" autocomplete="current-password" required />
+        </label>
+
+        <button type="submit" class="button button-primary">Enter Iron Log</button>
+      </form>
+
+      <div class="form-status" id="loginStatus">Ready.</div>
+    </section>
+  </main>
+
+  <script src="scripts/shared.js"></script>
+  <script src="scripts/login.js"></script>
+</body>
+</html>

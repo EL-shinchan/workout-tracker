@@ -1,8 +1,6 @@
 const db = require("../db/database");
 const { readConfig, writeConfig } = require("./configStore");
 
-const defaultUsers = ["Eddie", "Jason"];
-
 function ensureUserSchema() {
   db.exec(`
     CREATE TABLE IF NOT EXISTS users (
@@ -17,14 +15,6 @@ function ensureUserSchema() {
 
   if (!hasUserId) {
     db.exec(`ALTER TABLE workout_sessions ADD COLUMN user_id INTEGER`);
-  }
-
-  const insertUser = db.prepare(`INSERT OR IGNORE INTO users (name) VALUES (?)`);
-  defaultUsers.forEach((name) => insertUser.run(name));
-
-  const eddie = db.prepare(`SELECT id FROM users WHERE name = ? COLLATE NOCASE`).get("Eddie");
-  if (eddie) {
-    db.prepare(`UPDATE workout_sessions SET user_id = ? WHERE user_id IS NULL`).run(eddie.id);
   }
 
   db.exec(`CREATE INDEX IF NOT EXISTS idx_workout_sessions_user_date ON workout_sessions(user_id, workout_date DESC)`);
@@ -58,13 +48,20 @@ function getActiveUserId() {
     return configuredId;
   }
 
-  const eddie = users.find((user) => user.name.toLowerCase() === "eddie") || users[0];
-  setActiveUserId(eddie.id);
-  return Number(eddie.id);
+  if (users.length > 0) {
+    setActiveUserId(users[0].id);
+    return Number(users[0].id);
+  }
+
+  return null;
 }
 
 function getActiveUser() {
   const activeUserId = getActiveUserId();
+  if (!activeUserId) {
+    return null;
+  }
+
   return db
     .prepare(`SELECT id, name, created_at AS createdAt FROM users WHERE id = ?`)
     .get(activeUserId);

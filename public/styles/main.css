@@ -1833,3 +1833,245 @@ body.workout-light-page .account-panel {
     radial-gradient(circle at 8% 95%, rgba(255, 190, 116, 0.22), transparent 34%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(247, 251, 255, 0.9));
 }
+
+/* Global light colorful app theme. This intentionally overrides the original dark shell across Iron Log. */
+:root {
+  --bg: #fff8ef;
+  --bg-deep: #f3f7ff;
+  --panel: rgba(255, 255, 255, 0.9);
+  --panel-strong: rgba(255, 255, 255, 0.96);
+  --panel-soft: rgba(31, 43, 71, 0.045);
+  --border: rgba(38, 49, 71, 0.1);
+  --text: #172033;
+  --muted: #5d6678;
+  --soft: #7d8798;
+  --ember: #ff7a1a;
+  --ember-soft: #e95f16;
+  --lime: #42c96f;
+  --danger: #e5484d;
+  --shadow: 0 22px 70px rgba(46, 57, 89, 0.14);
+}
+
+body {
+  background:
+    radial-gradient(circle at 12% 8%, rgba(255, 177, 110, 0.46), transparent 28%),
+    radial-gradient(circle at 88% 12%, rgba(102, 205, 255, 0.34), transparent 26%),
+    radial-gradient(circle at 22% 86%, rgba(183, 255, 90, 0.24), transparent 28%),
+    linear-gradient(145deg, #fff7ec 0%, #f6fbff 45%, #fffdf7 100%);
+  color: var(--text);
+}
+
+body::before {
+  background-image:
+    linear-gradient(rgba(24, 32, 47, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(24, 32, 47, 0.035) 1px, transparent 1px);
+  opacity: 0.28;
+}
+
+.grain {
+  opacity: 0.07;
+  mix-blend-mode: multiply;
+}
+
+.topbar {
+  background: rgba(255, 255, 255, 0.78);
+  border-bottom: 1px solid rgba(38, 49, 71, 0.08);
+  box-shadow: 0 12px 36px rgba(46, 57, 89, 0.08);
+}
+
+.brand,
+h1,
+h2,
+h3,
+.exercise-title {
+  color: #172033;
+}
+
+.brand {
+  text-shadow: 0 8px 28px rgba(255, 122, 26, 0.18);
+}
+
+.nav a {
+  color: #5c6574;
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.nav a:hover,
+.nav a.active {
+  color: #151b27;
+  border-color: rgba(255, 122, 26, 0.26);
+  background: linear-gradient(135deg, rgba(255, 196, 122, 0.5), rgba(255, 255, 255, 0.78));
+}
+
+.hero-panel,
+.panel,
+.stat-card,
+.quick-card,
+.exercise-card,
+.history-card,
+.detail-card,
+.entry-card,
+.mini-panel,
+.pr-card,
+.current-pr-card,
+.processed-draft-card,
+.photo-draft-exercise,
+.import-job-card,
+.automation-step,
+.login-card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 250, 242, 0.86));
+  border-color: rgba(38, 49, 71, 0.09);
+  box-shadow: var(--shadow);
+}
+
+.hero-panel,
+.highlight-panel,
+.pr-panel,
+.photo-upload-panel,
+.automation-panel,
+.account-panel {
+  background:
+    radial-gradient(circle at 95% 5%, rgba(112, 219, 139, 0.22), transparent 34%),
+    radial-gradient(circle at 8% 95%, rgba(98, 188, 255, 0.2), transparent 30%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(242, 250, 255, 0.88));
+}
+
+.exercise-builder-panel {
+  background:
+    radial-gradient(circle at 100% 0%, rgba(123, 111, 255, 0.2), transparent 34%),
+    radial-gradient(circle at 0% 100%, rgba(94, 205, 255, 0.22), transparent 32%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(245, 248, 255, 0.9));
+}
+
+.hero-copy,
+.panel p,
+.quick-card p,
+.field span,
+.empty-message,
+.status-copy,
+.highlight-copy,
+.import-job-main p {
+  color: var(--muted);
+}
+
+.eyebrow,
+.mini-label,
+.stat-label,
+.detail-label {
+  color: #f06c18;
+}
+
+input,
+select,
+textarea,
+.config-json-preview {
+  color: #192131;
+  background: rgba(255, 255, 255, 0.82);
+  border-color: rgba(38, 49, 71, 0.13);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: rgba(63, 133, 255, 0.55);
+  box-shadow: 0 0 0 4px rgba(63, 133, 255, 0.13);
+  background: #ffffff;
+}
+
+.set-row,
+.photo-draft-set,
+.detail-set-item,
+.empty-message,
+.form-status,
+.metric-pill,
+.info-pill,
+.status-chip,
+.config-toggle-row {
+  background: rgba(255, 255, 255, 0.64);
+  border-color: rgba(38, 49, 71, 0.09);
+  color: var(--muted);
+}
+
+.form-status.success {
+  background: rgba(75, 205, 112, 0.14);
+  color: #146431;
+}
+
+.form-status.error {
+  background: rgba(229, 72, 77, 0.11);
+  color: #9f1f28;
+}
+
+.button-primary {
+  color: #271406;
+  background: linear-gradient(135deg, #ffd76b, #ff8a2b);
+  box-shadow: 0 16px 34px rgba(255, 122, 26, 0.22);
+}
+
+.button-secondary {
+  color: #0d2814;
+  background: linear-gradient(135deg, #bfff77, #5ee08a);
+  box-shadow: 0 14px 30px rgba(77, 199, 112, 0.18);
+}
+
+.button-ghost,
+.icon-button {
+  color: #233048;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(38, 49, 71, 0.1);
+}
+
+.button-danger {
+  color: white;
+  background: linear-gradient(135deg, #ff8f8f, #e5484d);
+}
+
+.photo-drop-zone {
+  background: linear-gradient(135deg, rgba(221, 255, 226, 0.82), rgba(238, 249, 255, 0.9));
+  border-color: rgba(55, 178, 102, 0.28);
+  color: var(--muted);
+}
+
+.photo-drop-zone strong,
+.quick-clarify-card strong,
+.highlight-value,
+.status-list,
+.pr-badge,
+.pr-pill {
+  color: #172033;
+}
+
+.photo-drop-icon,
+.quick-number,
+.set-badge {
+  color: #172033;
+  background: linear-gradient(135deg, rgba(255, 196, 122, 0.72), rgba(183, 255, 90, 0.56));
+}
+
+.sticky-actions {
+  background: linear-gradient(180deg, transparent, rgba(248, 251, 255, 0.96) 32%);
+}
+
+.history-card:hover,
+.history-card.active {
+  border-color: rgba(255, 122, 26, 0.28);
+  background: linear-gradient(180deg, rgba(255, 244, 228, 0.95), rgba(255, 255, 255, 0.9));
+}
+
+.chart-wrap canvas {
+  filter: drop-shadow(0 14px 30px rgba(46, 57, 89, 0.12));
+}
+
+@media (max-width: 720px) {
+  body {
+    background:
+      radial-gradient(circle at 10% 4%, rgba(255, 177, 110, 0.42), transparent 30%),
+      radial-gradient(circle at 100% 16%, rgba(102, 205, 255, 0.3), transparent 30%),
+      linear-gradient(160deg, #fff8ef, #f6fbff 52%, #fffdf8);
+  }
+
+  .topbar {
+    background: rgba(255, 255, 255, 0.86);
+  }
+}

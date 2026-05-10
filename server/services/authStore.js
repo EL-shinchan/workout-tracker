@@ -150,6 +150,21 @@ function setUserPassword(name, password) {
   return dbUser;
 }
 
+function getAuthUserById(userId) {
+  ensureAuthSchema();
+  return readAuthUsers().users.find((user) => Number(user.id) === Number(userId)) || null;
+}
+
+function verifyPasswordForUserId(userId, password) {
+  const authUser = getAuthUserById(userId);
+  if (!authUser || !authUser.passwordHash || !authUser.passwordSalt) {
+    return false;
+  }
+
+  const hashed = hashPassword(password, authUser.passwordSalt);
+  return timingSafeEqual(hashed.hash, authUser.passwordHash);
+}
+
 function verifyUserPassword(name, password) {
   ensureAuthSchema();
   const authUser = findAuthUserByName(name);
@@ -208,6 +223,30 @@ function getSession(token) {
   }
 
   return { user: publicUser(user), expiresAt: session.expiresAt };
+}
+
+function deleteAccount(userId, password) {
+  ensureAuthSchema();
+  const authUser = getAuthUserById(userId);
+  if (!authUser) {
+    throw new Error("Account not found.");
+  }
+
+  if (!verifyPasswordForUserId(userId, password)) {
+    throw new Error("Password confirmation failed.");
+  }
+
+  const data = readAuthUsers();
+  data.users = data.users.filter((user) => Number(user.id) !== Number(userId));
+  writeAuthUsers(data);
+
+  const sessions = readSessions();
+  sessions.sessions = sessions.sessions.filter((session) => Number(session.userId) !== Number(userId));
+  writeSessions(sessions);
+
+  db.prepare(`DELETE FROM workout_sessions WHERE user_id = ?`).run(Number(userId));
+  db.prepare(`DELETE FROM users WHERE id = ?`).run(Number(userId));
+  return { id: Number(userId), name: authUser.name };
 }
 
 function deleteSession(token) {
@@ -271,6 +310,7 @@ module.exports = {
   createAccount,
   setUserPassword,
   verifyUserPassword,
+  deleteAccount,
   createSession,
   getRequestSession,
   deleteSession,

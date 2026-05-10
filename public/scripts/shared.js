@@ -66,6 +66,7 @@
   }
 
   window.appUtils = {
+    requestJSON: request,
     getJSON(url) {
       return request(url);
     },

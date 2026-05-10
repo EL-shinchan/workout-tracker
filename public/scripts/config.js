@@ -8,6 +8,11 @@ document.addEventListener("DOMContentLoaded", async function () {
   const reloadConfigButton = document.getElementById("reloadConfigButton");
   const configStatus = document.getElementById("configStatus");
   const configJsonPreview = document.getElementById("configJsonPreview");
+  const accountName = document.getElementById("accountName");
+  const accountState = document.getElementById("accountState");
+  const accountStatus = document.getElementById("accountStatus");
+  const logoutButton = document.getElementById("logoutButton");
+  const deleteAccountButton = document.getElementById("deleteAccountButton");
 
   function renderConfig(payload) {
     const config = payload.config || {};
@@ -33,6 +38,17 @@ document.addEventListener("DOMContentLoaded", async function () {
     window.appUtils.setMessage(configStatus, "Config loaded.", "success");
   }
 
+  async function loadAccount() {
+    try {
+      const payload = await window.appUtils.getJSON("/api/auth/me");
+      accountName.textContent = payload.user ? payload.user.name : "Logged in";
+      accountState.textContent = "Active";
+      window.appUtils.setMessage(accountStatus, "Account loaded.", "success");
+    } catch (error) {
+      window.appUtils.setMessage(accountStatus, error.message, "error");
+    }
+  }
+
   configForm.addEventListener("submit", async function (event) {
     event.preventDefault();
 
@@ -55,11 +71,45 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
   });
 
+  logoutButton.addEventListener("click", async function () {
+    try {
+      await window.appUtils.postJSON("/api/auth/logout", {});
+      window.location.href = "login.html";
+    } catch (error) {
+      window.appUtils.setMessage(accountStatus, error.message, "error");
+    }
+  });
+
+  deleteAccountButton.addEventListener("click", async function () {
+    const password = window.prompt("Type your password to permanently delete this account and its workouts.");
+    if (!password) {
+      return;
+    }
+
+    const confirmed = window.confirm("This permanently deletes this account and all workouts under it. Continue?");
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      await window.appUtils.requestJSON("/api/auth/account", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password })
+      });
+      window.location.href = "login.html";
+    } catch (error) {
+      window.appUtils.setMessage(accountStatus, error.message, "error");
+    }
+  });
+
   reloadConfigButton.addEventListener("click", function () {
     loadConfig().catch(function (error) {
       window.appUtils.setMessage(configStatus, error.message, "error");
     });
   });
+
+  loadAccount();
 
   loadConfig().catch(function (error) {
     window.appUtils.setMessage(configStatus, error.message, "error");

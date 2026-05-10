@@ -5,6 +5,7 @@ const {
   createSession,
   getRequestSession,
   deleteSession,
+  deleteAccount,
   setSessionCookie,
   clearSessionCookie,
   SESSION_COOKIE
@@ -45,6 +46,22 @@ router.post("/signup", (req, res) => {
     return res.status(201).json({ user, message: `Account created. Welcome, ${user.name}.` });
   } catch (error) {
     return res.status(400).json({ message: error.message || "Could not create account." });
+  }
+});
+
+router.delete("/account", (req, res) => {
+  try {
+    const session = getRequestSession(req);
+    if (!session) {
+      return res.status(401).json({ message: "Login required." });
+    }
+
+    const password = String(req.body.password || "");
+    const deleted = deleteAccount(session.user.id, password);
+    clearSessionCookie(res);
+    return res.json({ message: `${deleted.name} account deleted.` });
+  } catch (error) {
+    return res.status(400).json({ message: error.message || "Could not delete account." });
   }
 });
 

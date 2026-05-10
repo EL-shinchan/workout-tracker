@@ -1820,3 +1820,16 @@ body.users-light-page #usersStatus {
     grid-template-columns: 1fr;
   }
 }
+
+.account-panel {
+  background:
+    radial-gradient(circle at 94% 8%, rgba(102, 205, 255, 0.18), transparent 32%),
+    linear-gradient(180deg, rgba(24, 28, 38, 0.96), rgba(13, 17, 25, 0.94));
+}
+
+body.workout-light-page .account-panel {
+  background:
+    radial-gradient(circle at 92% 8%, rgba(102, 205, 255, 0.24), transparent 34%),
+    radial-gradient(circle at 8% 95%, rgba(255, 190, 116, 0.22), transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(247, 251, 255, 0.9));
+}

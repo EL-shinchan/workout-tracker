@@ -1,10 +1,12 @@
 const express = require("express");
 const db = require("../db/database");
+const { getActiveUserId } = require("../services/userStore");
 
 const router = express.Router();
 
 router.get("/recent", (req, res) => {
   const limit = Math.max(1, Math.min(20, Number(req.query.limit) || 5));
+  const activeUserId = getActiveUserId();
 
   const workoutExerciseSummaries = db
     .prepare(
@@ -20,10 +22,11 @@ router.get("/recent", (req, res) => {
        JOIN workout_exercises we ON we.workout_session_id = ws.id
        JOIN exercises e ON e.id = we.exercise_id
        JOIN set_logs sl ON sl.workout_exercise_id = we.id
+       WHERE ws.user_id = ?
        GROUP BY ws.id, e.id
        ORDER BY ws.workout_date ASC, ws.id ASC, exerciseOrder ASC`
     )
-    .all();
+    .all(activeUserId);
 
   const bestByExercise = new Map();
   const prEvents = [];

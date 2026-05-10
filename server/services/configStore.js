@@ -157,6 +157,7 @@ function updatePhotoProcessorConfig(input) {
 module.exports = {
   allowedTimezones,
   readConfig,
+  writeConfig,
   updatePhotoProcessorConfig,
   configPath,
   timeToCron,

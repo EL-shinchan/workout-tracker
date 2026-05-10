@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>History | Workout Tracker</title>
+  <title>Users | Iron Log</title>
   <meta name="theme-color" content="#ff7a1a" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -29,37 +29,17 @@
 
   <main class="shell">
     <section class="page-intro">
-      <p class="eyebrow">Session archive</p>
-      <h1>Workout history</h1>
-      <p class="hero-copy">Review old sessions, inspect the exact sets, and keep your memory honest.</p>
+      <p class="eyebrow">Profiles</p>
+      <h1>Choose user</h1>
+      <p class="hero-copy">Keep Eddie and Jason's workouts separate while using the same Iron Log app.</p>
     </section>
 
-    <section class="content-grid two-columns-uneven">
-      <article class="panel">
-        <div class="panel-header">
-          <div>
-            <p class="eyebrow">Newest first</p>
-            <h2>Saved workouts</h2>
-          </div>
-        </div>
-        <div id="historyList" class="stack-list empty-message">No workouts yet.</div>
-      </article>
-
-      <article class="panel detail-panel" id="historyDetailPanel">
-        <div class="panel-header">
-          <div>
-            <p class="eyebrow">Session detail</p>
-            <h2 id="detailTitle">Pick a workout</h2>
-          </div>
-          <button type="button" class="button button-danger hidden" id="deleteWorkoutButton">Delete workout</button>
-        </div>
-        <div id="historyDetail" class="empty-message">Choose a workout from the left to inspect its exercises and sets.</div>
-      </article>
-    </section>
+    <section class="content-grid two-columns" id="usersGrid"></section>
+    <div class="form-status" id="usersStatus">Loading users...</div>
   </main>
 
   <script src="scripts/shared.js"></script>
-  <script src="scripts/history.js"></script>
+  <script src="scripts/users.js"></script>
   <script src="scripts/pwa.js"></script>
 </body>
 </html>

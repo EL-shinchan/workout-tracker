@@ -1695,3 +1695,30 @@ body.workout-light-page .sticky-actions {
     background: rgba(255, 255, 255, 0.84);
   }
 }
+
+.user-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.user-card::after {
+  content: "";
+  position: absolute;
+  width: 160px;
+  height: 160px;
+  right: -70px;
+  bottom: -80px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(255, 122, 26, 0.16), transparent 68%);
+  pointer-events: none;
+}
+
+.active-user-card {
+  border-color: rgba(183, 255, 90, 0.28);
+  background: linear-gradient(135deg, rgba(183, 255, 90, 0.12), rgba(255, 255, 255, 0.04));
+}
+
+button[disabled] {
+  cursor: not-allowed;
+  opacity: 0.72;
+}

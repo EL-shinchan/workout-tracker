@@ -1,11 +1,16 @@
 const express = require("express");
 const db = require("../db/database");
+const { getActiveUserId } = require("../services/userStore");
 
 const router = express.Router();
 
 function sanitizeNumber(value) {
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : NaN;
+}
+
+function userWhere(alias = "ws") {
+  return `${alias}.user_id = ?`;
 }
 
 function persistWorkoutExercises(workoutId, exercises) {
@@ -118,10 +123,11 @@ router.get("/", (req, res) => {
        FROM workout_sessions ws
        LEFT JOIN workout_exercises we ON we.workout_session_id = ws.id
        LEFT JOIN set_logs sl ON sl.workout_exercise_id = we.id
+       WHERE ws.user_id = ?
        GROUP BY ws.id
        ORDER BY ws.workout_date DESC, ws.id DESC`
     )
-    .all();
+    .all(getActiveUserId());
 
   res.json({ workouts });
 });
@@ -133,9 +139,9 @@ router.get("/:id", (req, res) => {
     .prepare(
       `SELECT id, title, workout_date AS workoutDate, notes, created_at AS createdAt
        FROM workout_sessions
-       WHERE id = ?`
+       WHERE id = ? AND user_id = ?`
     )
-    .get(workoutId);
+    .get(workoutId, getActiveUserId());
 
   if (!workout) {
     return res.status(404).json({ message: "Workout not found." });
@@ -198,12 +204,13 @@ router.post("/", (req, res) => {
 
   try {
     const createWorkout = db.transaction(() => {
+      const activeUserId = getActiveUserId();
       const workoutResult = db
         .prepare(
-          `INSERT INTO workout_sessions (title, workout_date, notes)
-           VALUES (?, ?, ?)`
+          `INSERT INTO workout_sessions (title, workout_date, notes, user_id)
+           VALUES (?, ?, ?, ?)`
         )
-        .run(title, workoutDate, notes);
+        .run(title, workoutDate, notes, activeUserId);
 
       const workoutId = Number(workoutResult.lastInsertRowid);
       const findExerciseById = db.prepare(`SELECT id, name FROM exercises WHERE id = ?`);
@@ -211,8 +218,9 @@ router.post("/", (req, res) => {
       const getPreviousBestWeight = db.prepare(
         `SELECT COALESCE(MAX(sl.weight), 0) AS topWeight
          FROM workout_exercises we
+         JOIN workout_sessions ws ON ws.id = we.workout_session_id
          JOIN set_logs sl ON sl.workout_exercise_id = we.id
-         WHERE we.exercise_id = ?`
+         WHERE we.exercise_id = ? AND ws.user_id = ?`
       );
       const insertExercise = db.prepare(
         `INSERT INTO exercises (name, muscle_group, category)
@@ -270,7 +278,7 @@ router.post("/", (req, res) => {
         exerciseNamesById.set(exerciseId, exerciseName);
 
         if (!previousBestByExercise.has(exerciseId)) {
-          const previousBestWeight = Number(getPreviousBestWeight.get(exerciseId).topWeight || 0);
+          const previousBestWeight = Number(getPreviousBestWeight.get(exerciseId, activeUserId).topWeight || 0);
           previousBestByExercise.set(exerciseId, previousBestWeight);
         }
 
@@ -341,7 +349,7 @@ router.post("/", (req, res) => {
 
 router.put("/:id", (req, res) => {
   const workoutId = Number(req.params.id);
-  const existingWorkout = db.prepare(`SELECT id FROM workout_sessions WHERE id = ?`).get(workoutId);
+  const existingWorkout = db.prepare(`SELECT id FROM workout_sessions WHERE id = ? AND user_id = ?`).get(workoutId, getActiveUserId());
 
   if (!existingWorkout) {
     return res.status(404).json({ message: "Workout not found." });
@@ -366,9 +374,9 @@ router.put("/:id", (req, res) => {
       .prepare(
         `SELECT id, title, workout_date AS workoutDate, notes, created_at AS createdAt
          FROM workout_sessions
-         WHERE id = ?`
+         WHERE id = ? AND user_id = ?`
       )
-      .get(workoutId);
+      .get(workoutId, getActiveUserId());
 
     res.json({ workout: updatedWorkout, message: "Workout updated." });
   } catch (error) {
@@ -378,7 +386,7 @@ router.put("/:id", (req, res) => {
 
 router.delete("/:id", (req, res) => {
   const workoutId = Number(req.params.id);
-  const existingWorkout = db.prepare(`SELECT id FROM workout_sessions WHERE id = ?`).get(workoutId);
+  const existingWorkout = db.prepare(`SELECT id FROM workout_sessions WHERE id = ? AND user_id = ?`).get(workoutId, getActiveUserId());
 
   if (!existingWorkout) {
     return res.status(404).json({ message: "Workout not found." });

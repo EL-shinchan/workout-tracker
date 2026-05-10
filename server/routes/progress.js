@@ -1,10 +1,12 @@
 const express = require("express");
 const db = require("../db/database");
+const { getActiveUserId } = require("../services/userStore");
 
 const router = express.Router();
 
 router.get("/exercise/:exerciseId", (req, res) => {
   const exerciseId = Number(req.params.exerciseId);
+  const activeUserId = getActiveUserId();
 
   const exercise = db
     .prepare(
@@ -32,11 +34,11 @@ router.get("/exercise/:exerciseId", (req, res) => {
        FROM workout_sessions ws
        JOIN workout_exercises we ON we.workout_session_id = ws.id
        JOIN set_logs sl ON sl.workout_exercise_id = we.id
-       WHERE we.exercise_id = ?
+       WHERE we.exercise_id = ? AND ws.user_id = ?
        GROUP BY ws.id
        ORDER BY ws.workout_date ASC, ws.id ASC`
     )
-    .all(exerciseId);
+    .all(exerciseId, activeUserId);
 
   let runningBestWeight = 0;
   let allTimeBest = null;
@@ -82,10 +84,10 @@ router.get("/exercise/:exerciseId", (req, res) => {
        FROM workout_sessions ws
        JOIN workout_exercises we ON we.workout_session_id = ws.id
        JOIN set_logs sl ON sl.workout_exercise_id = we.id
-       WHERE we.exercise_id = ?
+       WHERE we.exercise_id = ? AND ws.user_id = ?
        ORDER BY ws.workout_date DESC, ws.id DESC, sl.set_number ASC`
     )
-    .all(exerciseId);
+    .all(exerciseId, activeUserId);
 
   const prWorkoutIds = new Set(
     summary.filter((entry) => entry.isPr).map((entry) => Number(entry.workoutId))

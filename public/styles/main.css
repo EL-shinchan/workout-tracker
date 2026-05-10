@@ -1455,3 +1455,40 @@ textarea {
     border-radius: 18px 18px 0 0;
   }
 }
+
+/* Strong New Workout section separation: make the exercise builder read as its own block. */
+.exercise-builder-panel > .panel-header {
+  margin-bottom: 28px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.exercise-builder-panel #exerciseList.exercise-list {
+  margin-top: 0;
+}
+
+.exercise-builder-panel .exercise-card {
+  border-color: rgba(255, 122, 26, 0.16);
+  background:
+    linear-gradient(180deg, rgba(28, 32, 42, 0.92), rgba(14, 18, 24, 0.92));
+}
+
+.exercise-builder-panel .exercise-select {
+  margin-top: 4px;
+}
+
+@media (max-width: 720px) {
+  .exercise-builder-panel > .panel-header {
+    margin-bottom: 26px;
+    padding-bottom: 18px;
+  }
+
+  .exercise-builder-panel #exerciseList.exercise-list {
+    margin-top: 0;
+  }
+
+  .exercise-builder-panel .exercise-card-header {
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  }
+}

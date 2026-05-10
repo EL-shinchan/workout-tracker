@@ -14,16 +14,18 @@
   <main class="login-shell">
     <section class="login-card">
       <p class="eyebrow">Iron Log</p>
-      <h1>Welcome back</h1>
-      <p class="hero-copy">Log in as Eddie or Jason to keep workouts separate.</p>
+      <h1 id="loginTitle">Welcome back</h1>
+      <p class="hero-copy" id="loginCopy">Log in with your username and password.</p>
+
+      <div class="login-mode-switch">
+        <button type="button" class="button button-primary" id="showLoginButton">Log in</button>
+        <button type="button" class="button button-ghost" id="showSignupButton">Create account</button>
+      </div>
 
       <form id="loginForm" class="config-form">
         <label class="field">
-          <span>User</span>
-          <select id="loginName" required>
-            <option value="Eddie">Eddie</option>
-            <option value="Jason">Jason</option>
-          </select>
+          <span>Username</span>
+          <input type="text" id="loginName" autocomplete="username" placeholder="Eddie" required />
         </label>
 
         <label class="field">
@@ -31,7 +33,12 @@
           <input type="password" id="loginPassword" autocomplete="current-password" required />
         </label>
 
-        <button type="submit" class="button button-primary">Enter Iron Log</button>
+        <label class="field hidden" id="confirmPasswordField">
+          <span>Confirm password</span>
+          <input type="password" id="confirmPassword" autocomplete="new-password" />
+        </label>
+
+        <button type="submit" class="button button-primary" id="submitLoginButton">Enter Iron Log</button>
       </form>
 
       <div class="form-status" id="loginStatus">Ready.</div>

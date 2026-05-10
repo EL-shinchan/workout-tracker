@@ -1803,3 +1803,20 @@ body.users-light-page #usersStatus {
 .login-card .button {
   width: 100%;
 }
+
+.login-mode-switch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 20px 0;
+  padding: 8px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.58);
+  border: 1px solid rgba(38, 49, 71, 0.08);
+}
+
+@media (max-width: 520px) {
+  .login-mode-switch {
+    grid-template-columns: 1fr;
+  }
+}

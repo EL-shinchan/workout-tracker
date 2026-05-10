@@ -1,5 +1,6 @@
 const express = require("express");
 const {
+  createAccount,
   verifyUserPassword,
   createSession,
   getRequestSession,
@@ -32,6 +33,19 @@ router.post("/login", (req, res) => {
   const session = createSession(user.id);
   setSessionCookie(res, session.token);
   return res.json({ user: { id: user.id, name: user.name }, message: `Welcome back, ${user.name}.` });
+});
+
+router.post("/signup", (req, res) => {
+  try {
+    const name = String(req.body.name || "").trim();
+    const password = String(req.body.password || "");
+    const user = createAccount(name, password);
+    const session = createSession(user.id);
+    setSessionCookie(res, session.token);
+    return res.status(201).json({ user, message: `Account created. Welcome, ${user.name}.` });
+  } catch (error) {
+    return res.status(400).json({ message: error.message || "Could not create account." });
+  }
 });
 
 router.post("/logout", (req, res) => {

@@ -4,6 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>New Workout | Workout Tracker</title>
+  <meta name="theme-color" content="#ff7a1a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Iron Log" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/icon-192.svg" />
   <link rel="stylesheet" href="styles/main.css" />
 </head>
 <body>
@@ -15,6 +21,8 @@
       <a href="workout.html">New Workout</a>
       <a href="history.html">History</a>
       <a href="progress.html">Progress</a>
+      <a href="imports.html">Imports</a>
+      <a href="config.html">Settings</a>
     </nav>
   </header>
 
@@ -52,6 +60,99 @@
         </label>
 
         <div class="form-status" id="formStatus">Ready when you are.</div>
+      </section>
+
+      <section class="panel photo-upload-panel full-span">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Fast capture</p>
+            <h2>Upload workout photo</h2>
+          </div>
+          <span class="info-pill">Async 22:00</span>
+        </div>
+
+        <div class="photo-upload-grid">
+          <label class="photo-drop-zone" for="workoutPhotoInput">
+            <span class="photo-drop-icon">📷</span>
+            <strong>Take or upload a workout photo</strong>
+            <span>Use a note, gym screen, scale photo, or messy training scribble. You will review it before saving.</span>
+            <input type="file" id="workoutPhotoInput" accept="image/*" capture="environment" />
+          </label>
+
+          <div class="photo-preview-card hidden" id="photoPreviewCard">
+            <img id="photoPreview" alt="Selected workout upload preview" />
+          </div>
+        </div>
+
+        <div class="quick-clarify-card">
+          <div>
+            <p class="mini-label">Quick clarification</p>
+            <h3>Tell me the missing part</h3>
+            <p class="highlight-copy">One lazy line is enough. Example: <strong>hip thrust 50kg x 10</strong></p>
+          </div>
+
+          <label class="field full-span">
+            <span>Quick note</span>
+            <input type="text" id="photoQuickNote" placeholder="hip thrust 50kg x 10" />
+          </label>
+
+          <div class="form-grid quick-clarify-fields">
+            <label class="field">
+              <span>Exercise</span>
+              <input type="text" id="photoClarifyExercise" placeholder="Hip thrust" />
+            </label>
+            <label class="field">
+              <span>Weight</span>
+              <input type="number" id="photoClarifyWeight" min="0" step="0.5" placeholder="50" />
+            </label>
+            <label class="field">
+              <span>Reps</span>
+              <input type="number" id="photoClarifyReps" min="1" step="1" placeholder="10" />
+            </label>
+            <label class="field">
+              <span>Body weight</span>
+              <input type="number" id="photoClarifyBodyWeight" min="0" step="0.1" placeholder="68.4" />
+            </label>
+          </div>
+        </div>
+
+        <section class="quick-clarify-card video-upload-card">
+          <div>
+            <p class="mini-label">Video logging MVP</p>
+            <h3>Upload one-set exercise video</h3>
+            <p class="highlight-copy">Say or type something like <strong>bench press 20kg x 12 set 1</strong>. Video rep count is assistive, not final truth.</p>
+          </div>
+
+          <label class="photo-drop-zone video-drop-zone" for="workoutVideoInput">
+            <span class="photo-drop-icon">🎥</span>
+            <strong>Choose or record exercise video</strong>
+            <span>Pick from your album or record a new one. One video should show one set.</span>
+            <input type="file" id="workoutVideoInput" accept="video/*" />
+          </label>
+
+          <video class="video-preview hidden" id="videoPreview" controls muted playsinline></video>
+
+          <div class="form-grid quick-clarify-fields">
+            <label class="field">
+              <span>Set number</span>
+              <input type="number" id="videoClarifySetNumber" min="1" step="1" placeholder="1" />
+            </label>
+          </div>
+        </section>
+
+        <div class="form-actions photo-actions">
+          <button type="button" class="button button-secondary" id="extractPhotoButton">Queue photo</button>
+          <button type="button" class="button button-secondary" id="queueVideoButton">Queue video</button>
+          <button type="button" class="button button-ghost" id="refreshDraftsButton">Refresh processed drafts</button>
+          <button type="button" class="button button-ghost hidden" id="discardPhotoDraftButton">Discard draft</button>
+        </div>
+
+        <div class="form-status" id="photoStatus">No photo selected yet.</div>
+        <div class="processed-drafts-panel" id="processedDraftsPanel">
+          <p class="mini-label">Processed drafts</p>
+          <div id="processedDraftsList" class="stack-list empty-message">No processed photo drafts yet.</div>
+        </div>
+        <div class="photo-draft-review hidden" id="photoDraftReview"></div>
       </section>
 
       <section class="panel">
@@ -139,5 +240,6 @@
 
   <script src="scripts/shared.js"></script>
   <script src="scripts/workout.js"></script>
+  <script src="scripts/pwa.js"></script>
 </body>
 </html>

@@ -25,6 +25,7 @@ router.get("/exercise/:exerciseId", (req, res) => {
          ws.title,
          ws.workout_date AS workoutDate,
          MAX(sl.weight) AS topWeight,
+         MAX(sl.reps) AS bestReps,
          COALESCE(SUM(sl.weight * sl.reps), 0) AS totalVolume,
          COALESCE(SUM(sl.reps), 0) AS totalReps,
          COUNT(sl.id) AS setCount
@@ -59,6 +60,7 @@ router.get("/exercise/:exerciseId", (req, res) => {
       ...entry,
       topWeight,
       totalVolume: Number(entry.totalVolume || 0),
+      bestReps: Number(entry.bestReps || 0),
       isPr
     };
   });
@@ -123,6 +125,7 @@ router.get("/exercise/:exerciseId", (req, res) => {
       labels: summary.map((entry) => entry.workoutDate),
       topWeight: summary.map((entry) => entry.topWeight),
       totalVolume: summary.map((entry) => entry.totalVolume),
+      bestReps: summary.map((entry) => entry.bestReps),
       prPointIndex: allTimeBest ? allTimeBest.chartIndex : null
     },
     history: groupedHistory

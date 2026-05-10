@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings | Workout Tracker</title>
+  <meta name="theme-color" content="#ff7a1a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Iron Log" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/icon-192.svg" />
+  <link rel="stylesheet" href="styles/main.css" />
+</head>
+<body>
+  <div class="grain"></div>
+  <header class="topbar">
+    <a href="index.html" class="brand">IRON LOG</a>
+    <nav class="nav">
+      <a href="index.html">Dashboard</a>
+      <a href="workout.html">New Workout</a>
+      <a href="history.html">History</a>
+      <a href="progress.html">Progress</a>
+      <a href="imports.html">Imports</a>
+      <a href="config.html">Settings</a>
+    </nav>
+  </header>
+
+  <main class="shell">
+    <section class="page-intro">
+      <p class="eyebrow">Control panel</p>
+      <h1>Settings</h1>
+      <p class="hero-copy">Change when Shinoske checks queued workout photos. Safe config only: timing, timezone, and enabled state.</p>
+    </section>
+
+    <section class="content-grid two-columns">
+      <article class="panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Photo processor</p>
+            <h2>Schedule</h2>
+          </div>
+          <span class="info-pill" id="processorState">Loading</span>
+        </div>
+
+        <form id="configForm" class="config-form">
+          <label class="config-toggle-row">
+            <span>
+              <strong>Enable processor</strong>
+              <small>When off, queued photos stay pending.</small>
+            </span>
+            <input type="checkbox" id="processorEnabled" />
+          </label>
+
+          <div class="form-grid">
+            <label class="field">
+              <span>Daily check time</span>
+              <input type="time" id="processorTime" required />
+            </label>
+
+            <label class="field">
+              <span>Timezone</span>
+              <select id="processorTimezone"></select>
+            </label>
+          </div>
+
+          <label class="field">
+            <span>Frequency</span>
+            <select id="processorFrequency">
+              <option value="daily">Daily</option>
+            </select>
+          </label>
+
+          <div class="form-actions">
+            <button type="submit" class="button button-primary">Save and sync cron</button>
+            <button type="button" class="button button-ghost" id="reloadConfigButton">Reload</button>
+          </div>
+        </form>
+
+        <div class="form-status" id="configStatus">Loading config...</div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">JSON preview</p>
+            <h2>Config file</h2>
+          </div>
+        </div>
+        <pre class="config-json-preview" id="configJsonPreview">{}</pre>
+      </article>
+    </section>
+  </main>
+
+  <script src="scripts/shared.js"></script>
+  <script src="scripts/config.js"></script>
+  <script src="scripts/pwa.js"></script>
+</body>
+</html>

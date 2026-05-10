@@ -78,6 +78,15 @@
         body: JSON.stringify(body)
       });
     },
+    putJSON(url, body) {
+      return request(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body)
+      });
+    },
     deleteJSON(url) {
       return request(url, { method: "DELETE" });
     },

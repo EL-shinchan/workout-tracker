@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   const params = new URLSearchParams(window.location.search);
 
   let weightChart = null;
-  let volumeChart = null;
+  let repsChart = null;
 
   function createChart(canvasId, label, color) {
     const context = document.getElementById(canvasId);
@@ -86,9 +86,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     applyPointHighlight(weightChart, [], null, "#ff7a1a", "#ffd36e");
     weightChart.update();
 
-    volumeChart.data.labels = [];
-    applyPointHighlight(volumeChart, [], null, "#b7ff5a", "#d8ff9e");
-    volumeChart.update();
+    repsChart.data.labels = [];
+    applyPointHighlight(repsChart, [], null, "#b7ff5a", "#d8ff9e");
+    repsChart.update();
   }
 
   async function loadProgress(exerciseId) {
@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         ? window.appUtils.formatNumber(data.allTimeBest.weight) + " kg"
         : "0";
       bestVolume.textContent = window.appUtils.formatNumber(Math.max.apply(null, summary.map(function (entry) {
-        return Number(entry.totalVolume || 0);
+        return Number(entry.bestReps || 0);
       })));
       bestWeightDate.textContent = data.allTimeBest
         ? window.appUtils.formatDate(data.allTimeBest.workoutDate)
@@ -141,15 +141,15 @@ document.addEventListener("DOMContentLoaded", async function () {
       );
       weightChart.update();
 
-      volumeChart.data.labels = data.chartData.labels;
+      repsChart.data.labels = data.chartData.labels;
       applyPointHighlight(
-        volumeChart,
-        data.chartData.totalVolume,
+        repsChart,
+        data.chartData.bestReps,
         data.chartData.prPointIndex,
         "#b7ff5a",
         "#f4f1eb"
       );
-      volumeChart.update();
+      repsChart.update();
 
       progressHistory.innerHTML = data.history.map(function (entry) {
         const bestSet = entry.sets.reduce(function (best, set) {
@@ -201,7 +201,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       .join("");
 
     weightChart = createChart("weightChart", "Top weight", "#ff7a1a");
-    volumeChart = createChart("volumeChart", "Total volume", "#b7ff5a");
+    repsChart = createChart("volumeChart", "Best reps", "#b7ff5a");
 
     const selectedExercise = params.get("exercise");
     if (selectedExercise) {

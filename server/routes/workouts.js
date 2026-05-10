@@ -8,6 +8,101 @@ function sanitizeNumber(value) {
   return Number.isFinite(parsed) ? parsed : NaN;
 }
 
+function persistWorkoutExercises(workoutId, exercises) {
+  const findExerciseById = db.prepare(`SELECT id, name FROM exercises WHERE id = ?`);
+  const findExerciseByName = db.prepare(`SELECT id, name FROM exercises WHERE name = ? COLLATE NOCASE`);
+  const insertExercise = db.prepare(
+    `INSERT INTO exercises (name, muscle_group, category)
+     VALUES (?, ?, ?)`
+  );
+  const insertWorkoutExercise = db.prepare(
+    `INSERT INTO workout_exercises (workout_session_id, exercise_id, exercise_order, notes)
+     VALUES (?, ?, ?, ?)`
+  );
+  const insertSet = db.prepare(
+    `INSERT INTO set_logs (workout_exercise_id, set_number, weight, reps, notes)
+     VALUES (?, ?, ?, ?, ?)`
+  );
+
+  exercises.forEach((exercise, exerciseIndex) => {
+    const setList = Array.isArray(exercise.sets) ? exercise.sets : [];
+
+    if (setList.length === 0) {
+      throw new Error(`Exercise ${exerciseIndex + 1} must have at least one set.`);
+    }
+
+    let exerciseId = exercise.exerciseId ? Number(exercise.exerciseId) : null;
+
+    if (exerciseId) {
+      const existingExercise = findExerciseById.get(exerciseId);
+      if (!existingExercise) {
+        throw new Error(`Selected exercise ${exerciseId} was not found.`);
+      }
+    } else {
+      const requestedExerciseName = String(exercise.name || "").trim();
+      const muscleGroup = String(exercise.muscleGroup || "").trim();
+      const category = String(exercise.category || "").trim();
+
+      if (!requestedExerciseName) {
+        throw new Error(`Exercise ${exerciseIndex + 1} needs a name.`);
+      }
+
+      const existingByName = findExerciseByName.get(requestedExerciseName);
+      if (existingByName) {
+        exerciseId = existingByName.id;
+      } else {
+        exerciseId = Number(insertExercise.run(requestedExerciseName, muscleGroup, category).lastInsertRowid);
+      }
+    }
+
+    const workoutExerciseId = Number(
+      insertWorkoutExercise.run(
+        workoutId,
+        exerciseId,
+        exerciseIndex + 1,
+        String(exercise.notes || "").trim()
+      ).lastInsertRowid
+    );
+
+    setList.forEach((set, setIndex) => {
+      const weight = sanitizeNumber(set.weight);
+      const reps = sanitizeNumber(set.reps);
+      const setNotes = String(set.notes || "").trim();
+
+      if (!Number.isFinite(weight) || weight <= 0) {
+        throw new Error(`Set ${setIndex + 1} in exercise ${exerciseIndex + 1} needs a valid weight.`);
+      }
+
+      if (!Number.isFinite(reps) || reps <= 0) {
+        throw new Error(`Set ${setIndex + 1} in exercise ${exerciseIndex + 1} needs valid reps.`);
+      }
+
+      insertSet.run(workoutExerciseId, setIndex + 1, weight, Math.round(reps), setNotes);
+    });
+  });
+}
+
+function validateWorkoutPayload(body) {
+  const title = String(body.title || "").trim();
+  const workoutDate = String(body.workoutDate || "").trim();
+  const notes = String(body.notes || "").trim();
+  const exercises = Array.isArray(body.exercises) ? body.exercises : [];
+
+  if (!title) {
+    throw new Error("Workout title is required.");
+  }
+
+  if (!workoutDate) {
+    throw new Error("Workout date is required.");
+  }
+
+  if (exercises.length === 0) {
+    throw new Error("Add at least one exercise.");
+  }
+
+  return { title, workoutDate, notes, exercises };
+}
+
 router.get("/", (req, res) => {
   const workouts = db
     .prepare(
@@ -240,6 +335,44 @@ router.post("/", (req, res) => {
     res.status(201).json({ workout: createdWorkout, newPrs: result.newPrs });
   } catch (error) {
     res.status(400).json({ message: error.message || "Could not save workout." });
+  }
+});
+
+
+router.put("/:id", (req, res) => {
+  const workoutId = Number(req.params.id);
+  const existingWorkout = db.prepare(`SELECT id FROM workout_sessions WHERE id = ?`).get(workoutId);
+
+  if (!existingWorkout) {
+    return res.status(404).json({ message: "Workout not found." });
+  }
+
+  try {
+    const payload = validateWorkoutPayload(req.body);
+    const updateWorkout = db.transaction(() => {
+      db.prepare(
+        `UPDATE workout_sessions
+         SET title = ?, workout_date = ?, notes = ?
+         WHERE id = ?`
+      ).run(payload.title, payload.workoutDate, payload.notes, workoutId);
+
+      db.prepare(`DELETE FROM workout_exercises WHERE workout_session_id = ?`).run(workoutId);
+      persistWorkoutExercises(workoutId, payload.exercises);
+    });
+
+    updateWorkout();
+
+    const updatedWorkout = db
+      .prepare(
+        `SELECT id, title, workout_date AS workoutDate, notes, created_at AS createdAt
+         FROM workout_sessions
+         WHERE id = ?`
+      )
+      .get(workoutId);
+
+    res.json({ workout: updatedWorkout, message: "Workout updated." });
+  } catch (error) {
+    res.status(400).json({ message: error.message || "Could not update workout." });
   }
 });
 

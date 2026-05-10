@@ -68,6 +68,9 @@ document.addEventListener("DOMContentLoaded", async function () {
           <span class="info-pill">${window.appUtils.formatDate(workout.workoutDate)}</span>
           <span class="info-pill">${workout.exercises.length} exercises</span>
         </div>
+        <div class="form-actions">
+          <a class="button button-secondary" href="workout.html?edit=${workout.id}">Edit workout</a>
+        </div>
         <p>${workout.notes ? workout.notes : "No session notes."}</p>
         <div class="stack-list">
           ${workout.exercises.map(function (exercise) {

@@ -1,1 +1,7 @@
+node_modules/
 .DS_Store
+**/.DS_Store
+data/
+server/db/*.db
+server/db/*.db-shm
+server/db/*.db-wal

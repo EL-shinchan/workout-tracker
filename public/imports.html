@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Imports | Iron Log</title>
+  <meta name="theme-color" content="#ff7a1a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Iron Log" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/icon-192.svg" />
+  <link rel="stylesheet" href="styles/main.css" />
+</head>
+<body>
+  <div class="grain"></div>
+  <header class="topbar">
+    <a href="index.html" class="brand">IRON LOG</a>
+    <nav class="nav">
+      <a href="index.html">Dashboard</a>
+      <a href="workout.html">New Workout</a>
+      <a href="history.html">History</a>
+      <a href="progress.html">Progress</a>
+      <a href="imports.html">Imports</a>
+      <a href="config.html">Settings</a>
+    </nav>
+  </header>
+
+  <main class="shell">
+    <section class="page-intro imports-intro">
+      <p class="eyebrow">Import monitor</p>
+      <h1>Queue control</h1>
+      <p class="hero-copy">See whether your iCloud videos arrived, processed cleanly, or need attention. No guessing. No “is it stuck?” nonsense.</p>
+    </section>
+
+    <section class="stats-grid import-stats" id="importStats">
+      <article class="stat-card ready-stat">
+        <p class="stat-label">Ready drafts</p>
+        <p class="stat-value" id="readyCount">0</p>
+      </article>
+      <article class="stat-card pending-stat">
+        <p class="stat-label">Pending</p>
+        <p class="stat-value" id="pendingCount">0</p>
+      </article>
+      <article class="stat-card failed-stat">
+        <p class="stat-label">Failed</p>
+        <p class="stat-value" id="failedCount">0</p>
+      </article>
+      <article class="stat-card">
+        <p class="stat-label">Last activity</p>
+        <p class="stat-value stat-small" id="lastImportActivity">No queue yet</p>
+      </article>
+    </section>
+
+    <section class="content-grid two-columns import-monitor-grid">
+      <article class="panel automation-panel full-span">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Automation</p>
+            <h2>iCloud → Queue → Draft</h2>
+          </div>
+          <span class="info-pill" id="automationState">Loading</span>
+        </div>
+        <div class="automation-timeline" id="automationTimeline">
+          <div class="automation-step">
+            <span class="automation-dot"></span>
+            <div>
+              <p class="mini-label">Importer</p>
+              <h3 id="importerTime">—</h3>
+              <p>Pulls new media from the Photos album <strong>Iron Log</strong>.</p>
+            </div>
+          </div>
+          <div class="automation-step">
+            <span class="automation-dot processor-dot"></span>
+            <div>
+              <p class="mini-label">Processor</p>
+              <h3 id="processorTime">—</h3>
+              <p>Turns queued media into reviewable workout drafts.</p>
+            </div>
+          </div>
+        </div>
+        <div class="form-status" id="importsStatus">Loading imports...</div>
+      </article>
+
+      <article class="panel import-section ready-section">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Ready</p>
+            <h2>Review these</h2>
+          </div>
+        </div>
+        <div id="readyJobs" class="stack-list empty-message">No ready drafts.</div>
+      </article>
+
+      <article class="panel import-section pending-section">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Waiting</p>
+            <h2>Pending queue</h2>
+          </div>
+        </div>
+        <div id="pendingJobs" class="stack-list empty-message">Nothing pending.</div>
+      </article>
+
+      <article class="panel import-section failed-section full-span">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Needs attention</p>
+            <h2>Failed imports</h2>
+          </div>
+        </div>
+        <div id="failedJobs" class="stack-list empty-message">No failed jobs.</div>
+      </article>
+    </section>
+  </main>
+
+  <script src="scripts/shared.js"></script>
+  <script src="scripts/imports.js"></script>
+  <script src="scripts/pwa.js"></script>
+</body>
+</html>

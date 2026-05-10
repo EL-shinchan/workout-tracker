@@ -1402,23 +1402,53 @@ textarea {
   }
 }
 
-/* New Workout comfort fix: keep the exercise picker and bottom save bar from visually colliding on smaller screens. */
-.exercise-list {
-  margin-top: 6px;
+/* New Workout comfort fix: give the generated exercise block real breathing room. */
+#exerciseList.exercise-list {
+  display: grid;
+  gap: 22px;
+  margin-top: 18px;
 }
 
-.exercise-list + .sticky-actions {
-  margin-top: 22px;
+#exerciseList .exercise-card {
+  margin-top: 0;
+}
+
+#exerciseList .exercise-card > .form-grid {
+  margin-top: 6px;
+  row-gap: 18px;
+}
+
+#exerciseList .field {
+  gap: 10px;
+}
+
+#exerciseList + .sticky-actions {
+  margin-top: 28px;
 }
 
 @media (max-width: 720px) {
-  .exercise-list {
-    margin-top: 10px;
-    padding-bottom: 8px;
+  #exerciseList.exercise-list {
+    gap: 24px;
+    margin-top: 20px;
+    padding-bottom: 14px;
   }
 
-  .exercise-list + .sticky-actions {
-    margin-top: 24px;
+  #exerciseList .exercise-card {
+    gap: 20px;
+    padding: 18px;
+  }
+
+  #exerciseList .exercise-card > .form-grid {
+    gap: 18px !important;
+    margin-top: 4px;
+  }
+
+  #exerciseList .field {
+    gap: 12px;
+  }
+
+  #exerciseList + .sticky-actions {
+    margin-top: 30px;
   }
 
   .sticky-actions {

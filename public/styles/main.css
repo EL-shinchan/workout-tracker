@@ -1401,3 +1401,27 @@ textarea {
     width: 100%;
   }
 }
+
+/* New Workout comfort fix: keep the exercise picker and bottom save bar from visually colliding on smaller screens. */
+.exercise-list {
+  margin-top: 6px;
+}
+
+.exercise-list + .sticky-actions {
+  margin-top: 22px;
+}
+
+@media (max-width: 720px) {
+  .exercise-list {
+    margin-top: 10px;
+    padding-bottom: 8px;
+  }
+
+  .exercise-list + .sticky-actions {
+    margin-top: 24px;
+  }
+
+  .sticky-actions {
+    border-radius: 18px 18px 0 0;
+  }
+}

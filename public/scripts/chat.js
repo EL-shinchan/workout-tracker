@@ -199,4 +199,10 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   addMessage("bot", "Hey, I’m Coach Fox. Ask me simple food, workout, or daily fitness questions. I’ll use local basics first, then AI if I need more brainpower.");
+
+  const initialAsk = new URLSearchParams(window.location.search).get("ask");
+  if (initialAsk) {
+    submitQuestion(initialAsk);
+    window.history.replaceState({}, "", "chat.html");
+  }
 });

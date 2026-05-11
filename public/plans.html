@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plans | Iron Log</title>
+  <meta name="theme-color" content="#ff7a1a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Iron Log" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/icon-192.svg" />
+  <link rel="stylesheet" href="styles/main.css" />
+</head>
+<body>
+  <div class="grain"></div>
+  <header class="topbar">
+    <a href="index.html" class="brand">IRON LOG</a>
+    <nav class="nav">
+      <a href="index.html">Dashboard</a>
+      <a href="workout.html">New Workout</a>
+      <a href="history.html">History</a>
+      <a href="progress.html">Progress</a>
+      <a href="imports.html">Imports</a>
+      <a href="nutrition.html">Nutrition</a>
+      <a href="chat.html">Chat</a>
+      <a href="plans.html">Plans</a>
+      <a href="config.html">Settings</a>
+    </nav>
+  </header>
+
+  <main class="shell plans-shell">
+    <section class="hero-panel plans-hero">
+      <div>
+        <p class="eyebrow">Future pricing</p>
+        <h1>Choose how Iron Log grows with you</h1>
+        <p class="hero-copy">Manual tracking stays useful. Pro will later unlock smarter AI and automation once Iron Log is ready for public launch.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="workout.html">Keep training</a>
+          <a class="button button-ghost" href="docs/superpowers/specs/2026-05-11-subscription-roadmap.md">Roadmap</a>
+        </div>
+      </div>
+      <div class="plan-status-card">
+        <span class="plan-badge">Current plan</span>
+        <strong>Free</strong>
+        <p>Local preview</p>
+        <small>No payment is live yet.</small>
+      </div>
+    </section>
+
+    <section class="plans-grid">
+      <article class="plan-card free-plan-card">
+        <div class="plan-card-header">
+          <span class="plan-badge">Current plan</span>
+          <h2>Free</h2>
+          <p class="plan-price">$0 <small>/ preview</small></p>
+          <p>Everything needed to build the habit and prove the app is useful.</p>
+        </div>
+        <ul class="plan-feature-list">
+          <li>Workout logging</li>
+          <li>Workout history</li>
+          <li>Progress basics</li>
+          <li>Manual nutrition tracking</li>
+          <li>Local Coach Fox basics</li>
+          <li>Dashboard command center</li>
+        </ul>
+        <button type="button" class="button button-ghost plan-button" disabled>Current plan</button>
+      </article>
+
+      <article class="plan-card pro-plan-card featured-plan">
+        <div class="plan-card-header">
+          <span class="plan-badge pro-badge">Future Pro</span>
+          <h2>Pro</h2>
+          <p class="plan-price">Coming soon</p>
+          <p>Smarter coaching and automation after hosting, legal, and Stripe foundations are ready.</p>
+        </div>
+        <ul class="plan-feature-list">
+          <li>Gemini Coach Fox AI</li>
+          <li>Nutrition macro estimates</li>
+          <li>Photo/video workout import</li>
+          <li>Advanced dashboard insights</li>
+          <li>Weekly reports later</li>
+          <li>Priority future features</li>
+        </ul>
+        <button type="button" class="button button-primary plan-button coming-soon-button" disabled>Coming soon</button>
+        <p class="plan-note">Payments are not live yet. Build the product first, then Stripe.</p>
+      </article>
+    </section>
+
+    <section class="panel plans-note-panel">
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">Payment safety</p>
+          <h2>Why there is no checkout button yet</h2>
+        </div>
+      </div>
+      <div class="plans-roadmap-grid">
+        <div>
+          <span class="quick-number">01</span>
+          <h3>Build value</h3>
+          <p>Workouts, nutrition, Coach Fox, and dashboard need to feel reliable first.</p>
+        </div>
+        <div>
+          <span class="quick-number">02</span>
+          <h3>Go production</h3>
+          <p>Public hosting, HTTPS, real database, backups, and secure account recovery.</p>
+        </div>
+        <div>
+          <span class="quick-number">03</span>
+          <h3>Add Stripe</h3>
+          <p>Checkout, customer portal, webhooks, and honest Pro feature gates.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="scripts/shared.js"></script>
+  <script src="scripts/pwa.js"></script>
+</body>
+</html>

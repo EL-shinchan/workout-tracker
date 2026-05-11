@@ -2570,3 +2570,210 @@ textarea:focus {
     grid-template-columns: 1fr;
   }
 }
+
+/* Plans page */
+.plans-shell {
+  max-width: 1120px;
+}
+
+.plans-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 0.28fr);
+  gap: 24px;
+  align-items: stretch;
+  margin-bottom: 24px;
+  background:
+    radial-gradient(circle at 92% 10%, rgba(255, 215, 107, 0.3), transparent 34%),
+    radial-gradient(circle at 8% 88%, rgba(98, 188, 255, 0.22), transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 250, 242, 0.9));
+}
+
+.plan-status-card {
+  display: grid;
+  align-content: center;
+  gap: 8px;
+  padding: 22px;
+  border: 1px solid rgba(38, 49, 71, 0.09);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(94, 224, 138, 0.28), transparent 38%),
+    rgba(255, 255, 255, 0.76);
+  box-shadow: 0 16px 42px rgba(46, 57, 89, 0.11);
+}
+
+.plan-status-card strong {
+  color: #172033;
+  font-size: clamp(2.4rem, 7vw, 4.2rem);
+  line-height: 0.95;
+}
+
+.plan-status-card p,
+.plan-status-card small {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.plans-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+.plan-card {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(22px, 4vw, 32px);
+  border: 1px solid rgba(38, 49, 71, 0.09);
+  border-radius: 32px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 250, 242, 0.88));
+  box-shadow: var(--shadow);
+}
+
+.plan-card::before {
+  position: absolute;
+  inset: -80px -90px auto auto;
+  width: 190px;
+  height: 190px;
+  content: "";
+  border-radius: 999px;
+  background: rgba(98, 188, 255, 0.2);
+}
+
+.featured-plan {
+  border-color: rgba(255, 122, 26, 0.24);
+  background:
+    radial-gradient(circle at 92% 4%, rgba(255, 122, 26, 0.22), transparent 34%),
+    radial-gradient(circle at 8% 95%, rgba(94, 224, 138, 0.18), transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 246, 232, 0.9));
+}
+
+.plan-card-header,
+.plan-feature-list,
+.plan-button,
+.plan-note {
+  position: relative;
+  z-index: 1;
+}
+
+.plan-badge {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  padding: 7px 11px;
+  border: 1px solid rgba(38, 49, 71, 0.09);
+  border-radius: 999px;
+  color: #146431;
+  background: rgba(94, 224, 138, 0.18);
+  font-size: 0.76rem;
+  font-weight: 950;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.pro-badge {
+  color: #8b4300;
+  background: rgba(255, 215, 107, 0.26);
+}
+
+.plan-card h2 {
+  margin: 18px 0 6px;
+  font-size: clamp(2.4rem, 8vw, 4.4rem);
+  line-height: 0.95;
+}
+
+.plan-price {
+  margin: 0 0 12px;
+  color: #172033;
+  font-size: clamp(1.7rem, 5vw, 2.35rem);
+  font-weight: 950;
+}
+
+.plan-price small {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.plan-card-header p:not(.plan-price),
+.plan-note,
+.plans-roadmap-grid p {
+  color: var(--muted);
+}
+
+.plan-feature-list {
+  display: grid;
+  gap: 10px;
+  padding: 0;
+  margin: 22px 0;
+  list-style: none;
+}
+
+.plan-feature-list li {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  color: #233048;
+  font-weight: 850;
+}
+
+.plan-feature-list li::before {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  flex: 0 0 auto;
+  content: "✓";
+  border-radius: 999px;
+  color: #103417;
+  background: linear-gradient(135deg, #bfff77, #5ee08a);
+  font-size: 0.8rem;
+  font-weight: 950;
+}
+
+.plan-button {
+  width: 100%;
+}
+
+.plan-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.78;
+}
+
+.plan-note {
+  margin: 12px 0 0;
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
+.plans-note-panel {
+  background:
+    radial-gradient(circle at 94% 8%, rgba(98, 188, 255, 0.2), transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(244, 250, 255, 0.88));
+}
+
+.plans-roadmap-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.plans-roadmap-grid > div {
+  padding: 16px;
+  border: 1px solid rgba(38, 49, 71, 0.08);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.64);
+}
+
+.plans-roadmap-grid h3,
+.plans-roadmap-grid p {
+  margin-bottom: 0;
+}
+
+@media (max-width: 860px) {
+  .plans-hero,
+  .plans-grid,
+  .plans-roadmap-grid {
+    grid-template-columns: 1fr;
+  }
+}

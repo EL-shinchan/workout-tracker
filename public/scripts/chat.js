@@ -92,8 +92,22 @@ document.addEventListener("DOMContentLoaded", function () {
     return 1;
   }
 
+  function hasAlias(text, alias) {
+    const escapedAlias = alias.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    return new RegExp(`(^|\\s)${escapedAlias}(\\s|$)`).test(text);
+  }
+
   function findFood(text) {
-    return foods.find((food) => food.aliases.some((alias) => text.includes(alias)));
+    return foods.find((food) => food.aliases.some((alias) => hasAlias(text, alias)));
+  }
+
+  function safetyAnswer(rawQuestion) {
+    const question = normalize(rawQuestion);
+    if (/pain|injur|hurt|doctor|medical|sick|ill|allerg|vomit|dizzy|faint/.test(question)) {
+      return "If there is pain, injury, sickness, allergies, or medical stuff involved, ask a real doctor, physio, or coach. Coach Fox can help with basics, not diagnosis.";
+    }
+
+    return null;
   }
 
   function nutritionAnswer(rawQuestion) {
@@ -116,10 +130,6 @@ document.addEventListener("DOMContentLoaded", function () {
   function workoutAnswer(rawQuestion) {
     const question = normalize(rawQuestion);
 
-    if (/pain|injur|hurt|doctor|medical|sick/.test(question)) {
-      return "If there is pain, injury, or medical stuff involved, ask a real doctor, physio, or coach. Coach Fox can help with basics, not diagnosis.";
-    }
-
     const exact = workoutAnswers.find((entry) => entry.keys.some((key) => question.includes(key)));
     if (exact) {
       return exact.answer;
@@ -134,7 +144,8 @@ document.addEventListener("DOMContentLoaded", function () {
       return "Ask me a food or workout question.";
     }
 
-    return nutritionAnswer(cleaned)
+    return safetyAnswer(cleaned)
+      || nutritionAnswer(cleaned)
       || workoutAnswer(cleaned)
       || "I don't know that yet — ask Shinoske to add it.";
   }
@@ -143,6 +154,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const text = String(question || "").trim();
     if (!text) {
       addMessage("bot", answerQuestion(text));
+      chatInput.value = "";
+      chatInput.focus();
       return;
     }
 

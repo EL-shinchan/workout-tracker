@@ -48,6 +48,10 @@ app.use((req, res, next) => {
 
 app.use(express.static(publicDir));
 
+app.get("/users.html", (_req, res) => {
+  res.redirect("/config.html");
+});
+
 app.get("/api/health", (req, res) => {
   res.json({ ok: true });
 });
@@ -66,6 +70,10 @@ app.get("/", (req, res) => {
 });
 
 app.use((req, res) => {
+  if (req.path.endsWith(".html") || req.accepts("html")) {
+    return getRequestSession(req) ? res.redirect("/index.html") : res.redirect("/login.html");
+  }
+
   res.status(404).json({ message: "Not found." });
 });
 

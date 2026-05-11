@@ -5,7 +5,7 @@
   "start_url": "/workout.html",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#090b10",
+  "background_color": "#fff8ef",
   "theme_color": "#ff7a1a",
   "orientation": "portrait-primary",
   "icons": [

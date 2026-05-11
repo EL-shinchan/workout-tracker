@@ -1,4 +1,4 @@
-const DEFAULT_MODEL = "gemini-1.5-flash";
+const DEFAULT_MODEL = "gemini-2.5-flash";
 const REQUEST_TIMEOUT_MS = 15000;
 
 const SYSTEM_PROMPT = `You are Coach Fox inside Iron Log.
@@ -67,7 +67,8 @@ async function askGemini(message) {
         ],
         generationConfig: {
           temperature: 0.4,
-          maxOutputTokens: 240
+          maxOutputTokens: 512,
+          thinkingConfig: { thinkingBudget: 0 }
         }
       }),
       signal: controller.signal

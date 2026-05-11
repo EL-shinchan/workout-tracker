@@ -34,9 +34,14 @@ document.addEventListener("DOMContentLoaded", function () {
   ];
 
   let currentDay = null;
+  let entryWasEstimated = false;
 
   function todayString() {
-    return new Date().toISOString().slice(0, 10);
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
   }
 
   function numberValue(element) {
@@ -120,9 +125,15 @@ document.addEventListener("DOMContentLoaded", function () {
       button.addEventListener("click", async function () {
         const card = button.closest(".nutrition-entry-card");
         const id = card.dataset.entryId;
+        const confirmed = window.confirm("Delete this food entry?");
+        if (!confirmed) {
+          return;
+        }
+
         try {
           await window.appUtils.requestJSON(`/api/nutrition/entries/${id}`, { method: "DELETE" });
           await loadDay();
+          window.appUtils.setMessage(entryStatus, "Food entry deleted.", "success");
         } catch (error) {
           window.appUtils.setMessage(entryStatus, error.message, "error");
         }
@@ -152,6 +163,7 @@ document.addEventListener("DOMContentLoaded", function () {
     fields.carbs.value = "";
     fields.fat.value = "";
     fields.notes.value = "";
+    entryWasEstimated = false;
   }
 
   goalsForm.addEventListener("submit", async function (event) {
@@ -184,7 +196,7 @@ document.addEventListener("DOMContentLoaded", function () {
         carbs: numberValue(fields.carbs),
         fat: numberValue(fields.fat),
         notes: fields.notes.value,
-        isEstimate: fields.notes.value.toLowerCase().includes("estimate")
+        isEstimate: entryWasEstimated
       });
       clearEntryForm();
       await loadDay();
@@ -210,6 +222,7 @@ document.addEventListener("DOMContentLoaded", function () {
       fields.carbs.value = estimate.carbs || "";
       fields.fat.value = estimate.fat || "";
       fields.notes.value = estimate.note || "Estimate only. Check labels when possible.";
+      entryWasEstimated = true;
       window.appUtils.setMessage(estimateStatus, "Estimate filled. Edit before saving.", "success");
     } catch (error) {
       window.appUtils.setMessage(estimateStatus, error.message, "error");

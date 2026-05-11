@@ -12,6 +12,25 @@ const {
 const router = express.Router();
 const ESTIMATE_UNAVAILABLE_MESSAGE = "Coach Fox estimate is unavailable right now. Enter macros manually.";
 
+function activeUserId(req) {
+  return req.authUser ? req.authUser.id : getActiveUserId();
+}
+
+function macroNumber(value) {
+  const direct = Number(value);
+  if (Number.isFinite(direct) && direct >= 0) {
+    return direct;
+  }
+
+  const match = String(value || "").match(/\d+(?:\.\d+)?/);
+  const parsed = match ? Number(match[0]) : 0;
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : 0;
+}
+
+function roundMacro(value) {
+  return Math.round(macroNumber(value) * 10) / 10;
+}
+
 function parseEstimateJson(text) {
   const raw = String(text || "").trim();
   const jsonMatch = raw.match(/\{[\s\S]*\}/);
@@ -22,10 +41,10 @@ function parseEstimateJson(text) {
   const data = JSON.parse(jsonMatch[0]);
   return {
     foodName: String(data.foodName || "").trim(),
-    calories: Number(data.calories || 0),
-    protein: Number(data.protein || 0),
-    carbs: Number(data.carbs || 0),
-    fat: Number(data.fat || 0),
+    calories: data.calories,
+    protein: data.protein,
+    carbs: data.carbs,
+    fat: data.fat,
     note: String(data.note || "Estimate only. Check labels when possible.").trim()
   };
 }
@@ -33,23 +52,21 @@ function parseEstimateJson(text) {
 function normalizeEstimate(data, fallbackName) {
   return {
     foodName: data.foodName || fallbackName,
-    calories: Math.max(0, Math.round(Number(data.calories || 0))),
-    protein: Math.max(0, Math.round(Number(data.protein || 0) * 10) / 10),
-    carbs: Math.max(0, Math.round(Number(data.carbs || 0) * 10) / 10),
-    fat: Math.max(0, Math.round(Number(data.fat || 0) * 10) / 10),
+    calories: Math.round(macroNumber(data.calories)),
+    protein: roundMacro(data.protein),
+    carbs: roundMacro(data.carbs),
+    fat: roundMacro(data.fat),
     note: data.note || "Estimate only. Check labels when possible."
   };
 }
 
 router.get("/day", (req, res) => {
-  const activeUserId = getActiveUserId();
-  return res.json(daySummary(activeUserId, normalizeDate(req.query.date)));
+  return res.json(daySummary(activeUserId(req), normalizeDate(req.query.date)));
 });
 
 router.put("/goals", (req, res) => {
   try {
-    const activeUserId = getActiveUserId();
-    const goals = saveGoals(activeUserId, req.body || {});
+    const goals = saveGoals(activeUserId(req), req.body || {});
     return res.json({ goals, message: "Nutrition goals saved." });
   } catch (error) {
     return res.status(400).json({ message: error.message || "Could not save goals." });
@@ -58,17 +75,16 @@ router.put("/goals", (req, res) => {
 
 router.post("/entries", (req, res) => {
   try {
-    const activeUserId = getActiveUserId();
-    const entry = createEntry(activeUserId, req.body || {});
-    return res.status(201).json({ entry, day: daySummary(activeUserId, entry.entryDate), message: "Food entry saved." });
+    const userId = activeUserId(req);
+    const entry = createEntry(userId, req.body || {});
+    return res.status(201).json({ entry, day: daySummary(userId, entry.entryDate), message: "Food entry saved." });
   } catch (error) {
     return res.status(400).json({ message: error.message || "Could not save food entry." });
   }
 });
 
 router.delete("/entries/:id", (req, res) => {
-  const activeUserId = getActiveUserId();
-  const deleted = deleteEntry(activeUserId, req.params.id);
+  const deleted = deleteEntry(activeUserId(req), req.params.id);
   if (!deleted) {
     return res.status(404).json({ message: "Food entry not found." });
   }

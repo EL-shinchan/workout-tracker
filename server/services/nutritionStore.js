@@ -51,7 +51,11 @@ function isDateString(value) {
 }
 
 function todayString() {
-  return new Date().toISOString().slice(0, 10);
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 function normalizeDate(value) {
@@ -130,6 +134,17 @@ function saveGoals(userId, goals) {
   return getGoals(userId);
 }
 
+function sanitizeEntry(entry) {
+  return {
+    ...entry,
+    calories: roundMacro(entry.calories),
+    protein: roundMacro(entry.protein),
+    carbs: roundMacro(entry.carbs),
+    fat: roundMacro(entry.fat),
+    isEstimate: Boolean(entry.isEstimate)
+  };
+}
+
 function createEntry(userId, body) {
   ensureNutritionSchema();
   const entryDate = normalizeDate(body.entryDate);
@@ -158,7 +173,7 @@ function createEntry(userId, body) {
     body.isEstimate ? 1 : 0
   );
 
-  return getEntry(userId, Number(result.lastInsertRowid));
+  return sanitizeEntry(getEntry(userId, Number(result.lastInsertRowid)));
 }
 
 function getEntry(userId, entryId) {
@@ -206,14 +221,7 @@ function listEntriesForDay(userId, date) {
          ELSE 4
        END,
        id ASC`
-  ).all(Number(userId), normalizeDate(date)).map((entry) => ({
-    ...entry,
-    calories: roundMacro(entry.calories),
-    protein: roundMacro(entry.protein),
-    carbs: roundMacro(entry.carbs),
-    fat: roundMacro(entry.fat),
-    isEstimate: Boolean(entry.isEstimate)
-  }));
+  ).all(Number(userId), normalizeDate(date)).map(sanitizeEntry);
 }
 
 function totalsForEntries(entries) {

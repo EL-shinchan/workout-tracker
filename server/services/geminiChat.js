@@ -36,7 +36,7 @@ function cleanReply(value) {
 }
 
 function geminiUrl() {
-  return `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(getModel())}:generateContent?key=${encodeURIComponent(getApiKey())}`;
+  return `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(getModel())}:generateContent`;
 }
 
 async function askGemini(message) {
@@ -51,7 +51,10 @@ async function askGemini(message) {
   try {
     const response = await fetch(geminiUrl(), {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "x-goog-api-key": apiKey
+      },
       body: JSON.stringify({
         systemInstruction: {
           parts: [{ text: SYSTEM_PROMPT }]

@@ -117,7 +117,7 @@ document.addEventListener("DOMContentLoaded", function () {
       return null;
     }
 
-    if (/chest|breath|faint|severe|numb|can't walk|cannot walk|high fever/.test(question)) {
+    if (/chest|breath|faint|severe|numb|can't walk|can’t walk|cant walk|cannot walk|high fever/.test(question)) {
       return "That sounds serious — please tell an adult now and get medical help quickly. Stop training, rest somewhere safe, and don’t try to push through it. Coach Fox can help with basics, but this needs real-world help.";
     }
 
@@ -178,8 +178,8 @@ document.addEventListener("DOMContentLoaded", function () {
       const thinkingMessage = addMessage("bot", "Coach Fox is thinking...");
       try {
         updateMessage(thinkingMessage, await askAi(text));
-      } catch (error) {
-        updateMessage(thinkingMessage, error.message || AI_UNAVAILABLE_MESSAGE);
+      } catch (_error) {
+        updateMessage(thinkingMessage, AI_UNAVAILABLE_MESSAGE);
       }
     }
 

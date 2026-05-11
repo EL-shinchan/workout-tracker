@@ -11,7 +11,7 @@ function safeMedicalReply(message) {
     return null;
   }
 
-  if (/chest|breath|faint|severe|numb|can't walk|cannot walk|high fever/.test(text)) {
+  if (/chest|breath|faint|severe|numb|can't walk|can’t walk|cant walk|cannot walk|high fever/.test(text)) {
     return "That sounds serious — please tell an adult now and get medical help quickly. Stop training, rest somewhere safe, and don’t try to push through it. Coach Fox can help with basics, but this needs real-world help.";
   }
 

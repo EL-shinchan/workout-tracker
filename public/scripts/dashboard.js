@@ -144,21 +144,38 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   todayLabel.textContent = todayString();
 
-  try {
-    const [workoutData, exerciseData, prData, nutritionData] = await Promise.all([
-      window.appUtils.getJSON("/api/workouts"),
-      window.appUtils.getJSON("/api/exercises"),
-      window.appUtils.getJSON("/api/prs/recent?limit=3"),
-      window.appUtils.getJSON("/api/nutrition/day")
-    ]);
+  const [workoutResult, exerciseResult, prResult, nutritionResult] = await Promise.allSettled([
+    window.appUtils.getJSON("/api/workouts"),
+    window.appUtils.getJSON("/api/exercises"),
+    window.appUtils.getJSON("/api/prs/recent?limit=3"),
+    window.appUtils.getJSON("/api/nutrition/day")
+  ]);
 
-    totalExercises.textContent = (exerciseData.exercises || []).length;
-    renderWorkouts(workoutData.workouts || []);
-    renderPrs(prData);
-    renderNutrition(nutritionData);
-  } catch (error) {
-    recentWorkouts.textContent = error.message;
-    recentPrs.textContent = error.message;
-    dashboardMacroList.textContent = error.message;
+  if (workoutResult.status === "fulfilled") {
+    renderWorkouts(workoutResult.value.workouts || []);
+  } else {
+    recentWorkouts.classList.add("empty-message");
+    recentWorkouts.textContent = workoutResult.reason.message || "Could not load workouts.";
+  }
+
+  if (exerciseResult.status === "fulfilled") {
+    totalExercises.textContent = (exerciseResult.value.exercises || []).length;
+  } else {
+    totalExercises.textContent = "—";
+  }
+
+  if (prResult.status === "fulfilled") {
+    renderPrs(prResult.value);
+  } else {
+    recentPrs.classList.add("empty-message");
+    recentPrs.textContent = prResult.reason.message || "Could not load PRs.";
+  }
+
+  if (nutritionResult.status === "fulfilled") {
+    renderNutrition(nutritionResult.value);
+  } else {
+    heroNutritionState.textContent = "Unavailable";
+    dashboardMacroList.className = "dashboard-macro-list empty-message";
+    dashboardMacroList.textContent = nutritionResult.reason.message || "Could not load nutrition.";
   }
 });

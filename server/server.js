@@ -12,6 +12,7 @@ const configRouter = require("./routes/config");
 const usersRouter = require("./routes/users");
 const authRouter = require("./routes/auth");
 const chatRouter = require("./routes/chat");
+const nutritionRouter = require("./routes/nutrition");
 const { ensureAuthSchema, getRequestSession, requireAuth } = require("./services/authStore");
 
 const app = express();
@@ -67,6 +68,7 @@ app.use("/api/photo-drafts", photoDraftsRouter);
 app.use("/api/config", configRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/chat", chatRouter);
+app.use("/api/nutrition", nutritionRouter);
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(publicDir, "index.html"));

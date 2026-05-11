@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nutrition | Iron Log</title>
+  <meta name="theme-color" content="#ff7a1a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Iron Log" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/icon-192.svg" />
+  <link rel="stylesheet" href="styles/main.css" />
+</head>
+<body>
+  <div class="grain"></div>
+  <header class="topbar">
+    <a href="index.html" class="brand">IRON LOG</a>
+    <nav class="nav">
+      <a href="index.html">Dashboard</a>
+      <a href="workout.html">New Workout</a>
+      <a href="history.html">History</a>
+      <a href="progress.html">Progress</a>
+      <a href="imports.html">Imports</a>
+      <a href="nutrition.html">Nutrition</a>
+      <a href="chat.html">Chat</a>
+      <a href="config.html">Settings</a>
+    </nav>
+  </header>
+
+  <main class="shell nutrition-shell">
+    <section class="hero-panel nutrition-hero">
+      <div>
+        <p class="eyebrow">Daily fuel</p>
+        <h1>Nutrition tracker</h1>
+        <p class="hero-copy">Track calories, protein, carbs, and fat against your daily goals. Simple enough to actually use.</p>
+      </div>
+      <label class="field nutrition-date-field">
+        <span>Selected day</span>
+        <input type="date" id="nutritionDate" />
+      </label>
+    </section>
+
+    <section class="macro-grid" id="macroGrid"></section>
+
+    <section class="content-grid two-columns-uneven nutrition-layout">
+      <article class="panel nutrition-entry-panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Log food</p>
+            <h2>Add food entry</h2>
+          </div>
+          <span class="info-pill">Editable</span>
+        </div>
+
+        <div class="coach-estimate-box">
+          <label class="field full-span">
+            <span>Coach Fox estimate</span>
+            <input type="text" id="estimateDescription" placeholder="2 eggs and a banana" />
+          </label>
+          <button type="button" class="button button-secondary" id="estimateButton">Estimate macros</button>
+        </div>
+        <div class="form-status" id="estimateStatus">Estimates fill the form. Check labels when possible.</div>
+
+        <form id="entryForm" class="config-form nutrition-form">
+          <div class="form-grid">
+            <label class="field">
+              <span>Meal</span>
+              <select id="mealType">
+                <option value="breakfast">Breakfast</option>
+                <option value="lunch">Lunch</option>
+                <option value="dinner">Dinner</option>
+                <option value="snack">Snack</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Food name</span>
+              <input type="text" id="foodName" placeholder="Chicken rice bowl" required />
+            </label>
+          </div>
+
+          <div class="form-grid macro-input-grid">
+            <label class="field"><span>Calories</span><input type="number" id="calories" min="0" step="1" placeholder="520" /></label>
+            <label class="field"><span>Protein g</span><input type="number" id="protein" min="0" step="0.1" placeholder="35" /></label>
+            <label class="field"><span>Carbs g</span><input type="number" id="carbs" min="0" step="0.1" placeholder="62" /></label>
+            <label class="field"><span>Fat g</span><input type="number" id="fat" min="0" step="0.1" placeholder="14" /></label>
+          </div>
+
+          <label class="field">
+            <span>Notes</span>
+            <textarea id="nutritionNotes" rows="3" placeholder="Brand, portion, estimate note..."></textarea>
+          </label>
+
+          <div class="form-actions">
+            <button type="submit" class="button button-primary">Save food</button>
+            <button type="button" class="button button-ghost" id="clearEntryButton">Clear</button>
+          </div>
+        </form>
+        <div class="form-status" id="entryStatus">Ready.</div>
+      </article>
+
+      <aside class="panel goals-panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Same every day</p>
+            <h2>Daily goals</h2>
+          </div>
+        </div>
+        <form id="goalsForm" class="config-form">
+          <label class="field"><span>Calories goal</span><input type="number" id="caloriesGoal" min="0" step="1" /></label>
+          <label class="field"><span>Protein goal g</span><input type="number" id="proteinGoal" min="0" step="0.1" /></label>
+          <label class="field"><span>Carbs goal g</span><input type="number" id="carbsGoal" min="0" step="0.1" /></label>
+          <label class="field"><span>Fat goal g</span><input type="number" id="fatGoal" min="0" step="0.1" /></label>
+          <button type="submit" class="button button-primary">Save goals</button>
+        </form>
+        <div class="form-status" id="goalsStatus">Load goals first.</div>
+      </aside>
+
+      <article class="panel full-span">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Selected day</p>
+            <h2>Food entries</h2>
+          </div>
+          <span class="info-pill" id="entryCount">0 entries</span>
+        </div>
+        <div id="entriesList" class="nutrition-entries empty-message">No food logged for this day yet.</div>
+      </article>
+    </section>
+  </main>
+
+  <script src="scripts/shared.js"></script>
+  <script src="scripts/nutrition.js"></script>
+  <script src="scripts/pwa.js"></script>
+</body>
+</html>

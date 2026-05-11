@@ -1,5 +1,5 @@
 const express = require("express");
-const { askOpenAi } = require("../services/openAiChat");
+const { askGemini } = require("../services/geminiChat");
 
 const router = express.Router();
 const MAX_MESSAGE_LENGTH = 800;
@@ -35,8 +35,8 @@ router.post("/", async (req, res) => {
   }
 
   try {
-    const reply = await askOpenAi(message);
-    return res.json({ reply, source: "openai" });
+    const reply = await askGemini(message);
+    return res.json({ reply, source: "gemini" });
   } catch (_error) {
     return res.status(503).json({ message: AI_UNAVAILABLE_MESSAGE });
   }

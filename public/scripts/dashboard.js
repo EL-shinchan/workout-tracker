@@ -80,10 +80,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     heroLastWorkout.textContent = workouts.length > 0 ? window.appUtils.formatDate(workouts[0].workoutDate) : "No workout yet";
 
     if (workouts.length === 0) {
+      recentWorkouts.classList.add("empty-message");
       recentWorkouts.innerHTML = "No workouts yet. Start with your first session.";
       return;
     }
 
+    recentWorkouts.classList.remove("empty-message");
     recentWorkouts.innerHTML = workouts.slice(0, 3).map(function (workout) {
       return `
         <article class="history-card dashboard-compact-card">
@@ -109,10 +111,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     totalPrs.textContent = prData.totalPrs || 0;
 
     if (prs.length === 0) {
+      recentPrs.classList.add("empty-message");
       recentPrs.innerHTML = "No PRs yet. Keep logging.";
       return;
     }
 
+    recentPrs.classList.remove("empty-message");
     recentPrs.innerHTML = prs.slice(0, 3).map(function (pr) {
       return `
         <article class="pr-card dashboard-compact-card">

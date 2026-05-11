@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Coach Fox | Iron Log</title>
+  <meta name="theme-color" content="#ff7a1a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Iron Log" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/icon-192.svg" />
+  <link rel="stylesheet" href="styles/main.css" />
+</head>
+<body>
+  <div class="grain"></div>
+  <header class="topbar">
+    <a href="index.html" class="brand">IRON LOG</a>
+    <nav class="nav">
+      <a href="index.html">Dashboard</a>
+      <a href="workout.html">New Workout</a>
+      <a href="history.html">History</a>
+      <a href="progress.html">Progress</a>
+      <a href="imports.html">Imports</a>
+      <a href="chat.html">Chat</a>
+      <a href="config.html">Settings</a>
+    </nav>
+  </header>
+
+  <main class="shell chat-shell">
+    <section class="hero-panel coach-fox-hero">
+      <div>
+        <p class="eyebrow">Daily helper</p>
+        <h1>Coach Fox 🦊</h1>
+        <p class="hero-copy">Ask quick food or beginner workout questions. Local, simple, no AI API yet.</p>
+      </div>
+      <div class="mini-panel accent-panel">
+        <p class="mini-label">Version 1</p>
+        <p class="mini-value">Nutrition facts + beginner lifting basics</p>
+      </div>
+    </section>
+
+    <section class="panel chat-panel">
+      <div class="chat-messages" id="chatMessages" aria-live="polite"></div>
+
+      <div class="chat-suggestions" aria-label="Example questions">
+        <button type="button" class="prompt-chip">How much protein in 2 eggs?</button>
+        <button type="button" class="prompt-chip">Calories in a banana?</button>
+        <button type="button" class="prompt-chip">What is bench press?</button>
+        <button type="button" class="prompt-chip">How many sets should a beginner do?</button>
+      </div>
+
+      <form id="chatForm" class="chat-form">
+        <label class="field chat-input-field">
+          <span>Ask Coach Fox</span>
+          <input type="text" id="chatInput" placeholder="how much protein in 2 eggs" autocomplete="off" />
+        </label>
+        <button type="submit" class="button button-primary">Send</button>
+      </form>
+    </section>
+  </main>
+
+  <script src="scripts/shared.js"></script>
+  <script src="scripts/chat.js"></script>
+  <script src="scripts/pwa.js"></script>
+</body>
+</html>

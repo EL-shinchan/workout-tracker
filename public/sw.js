@@ -1,4 +1,4 @@
-const CACHE_NAME = "iron-log-shell-v3";
+const CACHE_NAME = "iron-log-shell-v4";
 const SHELL_ASSETS = [
   "/",
   "/login.html",
@@ -7,6 +7,7 @@ const SHELL_ASSETS = [
   "/history.html",
   "/progress.html",
   "/imports.html",
+  "/chat.html",
   "/config.html",
   "/styles/main.css",
   "/scripts/shared.js",
@@ -16,6 +17,7 @@ const SHELL_ASSETS = [
   "/scripts/history.js",
   "/scripts/progress.js",
   "/scripts/imports.js",
+  "/scripts/chat.js",
   "/scripts/config.js",
   "/scripts/pwa.js",
   "/manifest.webmanifest",

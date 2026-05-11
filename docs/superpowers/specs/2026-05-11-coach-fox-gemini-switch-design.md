@@ -15,10 +15,10 @@ Switch Coach Fox V2 from OpenAI to Gemini because OpenAI API quota/billing block
 
 ```text
 GEMINI_API_KEY=...
-GEMINI_MODEL=gemini-1.5-flash
+GEMINI_MODEL=gemini-2.5-flash
 ```
 
-- Default model: `gemini-1.5-flash`.
+- Default model: `gemini-2.5-flash`.
 - If Gemini fails or key is missing, show the existing friendly fallback:
 
 ```text

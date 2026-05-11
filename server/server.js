@@ -1,5 +1,6 @@
 const express = require("express");
 const path = require("path");
+require("dotenv").config();
 require("./db/database");
 
 const exercisesRouter = require("./routes/exercises");
@@ -10,6 +11,7 @@ const photoDraftsRouter = require("./routes/photoDrafts");
 const configRouter = require("./routes/config");
 const usersRouter = require("./routes/users");
 const authRouter = require("./routes/auth");
+const chatRouter = require("./routes/chat");
 const { ensureAuthSchema, getRequestSession, requireAuth } = require("./services/authStore");
 
 const app = express();
@@ -64,6 +66,7 @@ app.use("/api/prs", prsRouter);
 app.use("/api/photo-drafts", photoDraftsRouter);
 app.use("/api/config", configRouter);
 app.use("/api/users", usersRouter);
+app.use("/api/chat", chatRouter);
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(publicDir, "index.html"));

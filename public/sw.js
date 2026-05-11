@@ -1,4 +1,4 @@
-const CACHE_NAME = "iron-log-shell-v4";
+const CACHE_NAME = "iron-log-shell-v5";
 const SHELL_ASSETS = [
   "/",
   "/login.html",

@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const chatForm = document.getElementById("chatForm");
   const chatInput = document.getElementById("chatInput");
   const promptChips = Array.from(document.querySelectorAll(".prompt-chip"));
+  const AI_UNAVAILABLE_MESSAGE = "Coach Fox AI is unavailable right now. Local basics still work.";
 
   const foods = [
     { name: "large egg", aliases: ["egg", "eggs"], serving: "1 large egg", protein: 6, calories: 70 },
@@ -68,10 +69,19 @@ document.addEventListener("DOMContentLoaded", function () {
     message.append(label, bubble);
     chatMessages.append(message);
     chatMessages.scrollTop = chatMessages.scrollHeight;
+    return message;
+  }
+
+  function updateMessage(message, text) {
+    const bubble = message && message.querySelector("p");
+    if (bubble) {
+      bubble.textContent = text;
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
   }
 
   function normalize(text) {
-    return String(text || "").toLowerCase().replace(/[^a-z0-9\s.-]/g, " ").replace(/\s+/g, " ").trim();
+    return String(text || "").toLowerCase().replace(/[^a-z0-9\s.'-]/g, " ").replace(/\s+/g, " ").trim();
   }
 
   function quantityFor(text, food) {
@@ -103,11 +113,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function safetyAnswer(rawQuestion) {
     const question = normalize(rawQuestion);
-    if (/pain|injur|hurt|doctor|medical|sick|ill|allerg|vomit|dizzy|faint/.test(question)) {
-      return "If there is pain, injury, sickness, allergies, or medical stuff involved, ask a real doctor, physio, or coach. Coach Fox can help with basics, not diagnosis.";
+    if (!/pain|injur|hurt|doctor|medical|sick|ill|allerg|vomit|dizzy|faint|fever|breath|chest|medicine|medication/.test(question)) {
+      return null;
     }
 
-    return null;
+    if (/chest|breath|faint|severe|numb|can't walk|cannot walk|high fever/.test(question)) {
+      return "That sounds serious — please tell an adult now and get medical help quickly. Stop training, rest somewhere safe, and don’t try to push through it. Coach Fox can help with basics, but this needs real-world help.";
+    }
+
+    return "Ouch — sorry you’re dealing with that. Stop hard training for now, rest, hydrate if you’re sick, and avoid anything that makes it worse. If it’s sharp, swelling, getting worse, unusual, or doesn’t improve, tell an adult and get checked by a doctor, physio, or coach.";
   }
 
   function nutritionAnswer(rawQuestion) {
@@ -129,38 +143,46 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function workoutAnswer(rawQuestion) {
     const question = normalize(rawQuestion);
-
     const exact = workoutAnswers.find((entry) => entry.keys.some((key) => question.includes(key)));
-    if (exact) {
-      return exact.answer;
-    }
-
-    return null;
+    return exact ? exact.answer : null;
   }
 
-  function answerQuestion(question) {
+  function localAnswer(question) {
     const cleaned = normalize(question);
     if (!cleaned) {
       return "Ask me a food or workout question.";
     }
 
-    return safetyAnswer(cleaned)
-      || nutritionAnswer(cleaned)
-      || workoutAnswer(cleaned)
-      || "I don't know that yet — ask Shinoske to add it.";
+    return safetyAnswer(cleaned) || nutritionAnswer(cleaned) || workoutAnswer(cleaned);
   }
 
-  function submitQuestion(question) {
+  async function askAi(question) {
+    const response = await window.appUtils.postJSON("/api/chat", { message: question });
+    return response.reply || AI_UNAVAILABLE_MESSAGE;
+  }
+
+  async function submitQuestion(question) {
     const text = String(question || "").trim();
     if (!text) {
-      addMessage("bot", answerQuestion(text));
+      addMessage("bot", localAnswer(text));
       chatInput.value = "";
       chatInput.focus();
       return;
     }
 
     addMessage("user", text);
-    addMessage("bot", answerQuestion(text));
+    const reply = localAnswer(text);
+    if (reply) {
+      addMessage("bot", reply);
+    } else {
+      const thinkingMessage = addMessage("bot", "Coach Fox is thinking...");
+      try {
+        updateMessage(thinkingMessage, await askAi(text));
+      } catch (error) {
+        updateMessage(thinkingMessage, error.message || AI_UNAVAILABLE_MESSAGE);
+      }
+    }
+
     chatInput.value = "";
     chatInput.focus();
   }
@@ -176,5 +198,5 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  addMessage("bot", "Hey, I’m Coach Fox. Ask me simple food or beginner workout questions — like protein in eggs or what bench press means.");
+  addMessage("bot", "Hey, I’m Coach Fox. Ask me simple food, workout, or daily fitness questions. I’ll use local basics first, then AI if I need more brainpower.");
 });

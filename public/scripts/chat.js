@@ -214,9 +214,7 @@ document.addEventListener("DOMContentLoaded", function () {
         { name: "Lat stretch", duration: "1 min" },
         { name: "Hamstring stretch", duration: "1 min" }
       ]
-    }
-  };
-
+    },
     "upper body": {
       title: "Upper body workout",
       target: "upper body",

@@ -1,5 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
   const nutritionDate = document.getElementById("nutritionDate");
+  const fuelDayLabel = document.getElementById("fuelDayLabel");
+  const fuelCaloriesMain = document.getElementById("fuelCaloriesMain");
+  const fuelCaloriesMeta = document.getElementById("fuelCaloriesMeta");
+  const fuelStatus = document.getElementById("fuelStatus");
+  const mealBreakdown = document.getElementById("mealBreakdown");
   const macroGrid = document.getElementById("macroGrid");
   const goalsForm = document.getElementById("goalsForm");
   const goalsStatus = document.getElementById("goalsStatus");
@@ -54,6 +59,66 @@ document.addEventListener("DOMContentLoaded", function () {
     return Number.isInteger(number) ? String(number) : number.toFixed(1);
   }
 
+  function selectedDayLabel() {
+    if (!nutritionDate.value) {
+      return "Today's fuel";
+    }
+
+    const [year, month, day] = nutritionDate.value.split("-").map(Number);
+    const selectedDate = new Date(year, month - 1, day);
+    return selectedDate.toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric" });
+  }
+
+  function getFuelStatus(goals, totals) {
+    const calorieGoal = Number(goals.caloriesGoal || 0);
+    const calories = Number(totals.calories || 0);
+    const proteinGoal = Number(goals.proteinGoal || 0);
+    const protein = Number(totals.protein || 0);
+
+    if (calorieGoal <= 0) {
+      return "Set a calorie goal to unlock your daily fuel summary.";
+    }
+
+    if (calories > calorieGoal) {
+      return "Over goal today — adjust the next meal calmly.";
+    }
+
+    if (proteinGoal > 0 && protein < proteinGoal * 0.5 && calories > calorieGoal * 0.5) {
+      return "Protein is behind — add a protein-focused food next.";
+    }
+
+    if (calories < calorieGoal * 0.8) {
+      return "On track — keep logging as you go.";
+    }
+
+    return "Nice pace — finish the day steady.";
+  }
+
+  function renderFuelSummary(day) {
+    const goals = day.goals || {};
+    const totals = day.totals || {};
+    const calorieGoal = Number(goals.caloriesGoal || 0);
+    const calories = Number(totals.calories || 0);
+    const remaining = calorieGoal - calories;
+
+    fuelDayLabel.textContent = selectedDayLabel();
+
+    if (calorieGoal <= 0) {
+      fuelCaloriesMain.textContent = `${formatMacro(calories)} kcal eaten`;
+      fuelCaloriesMeta.textContent = "Set a calorie goal to unlock your daily fuel summary.";
+      fuelStatus.textContent = "No pressure — goals can be set on the right.";
+      fuelStatus.className = "fuel-status neutral";
+      return;
+    }
+
+    fuelCaloriesMain.textContent = `${formatMacro(calories)} / ${formatMacro(calorieGoal)} kcal`;
+    fuelCaloriesMeta.textContent = remaining >= 0
+      ? `${formatMacro(remaining)} kcal left`
+      : `${formatMacro(Math.abs(remaining))} kcal over`;
+    fuelStatus.textContent = getFuelStatus(goals, totals);
+    fuelStatus.className = `fuel-status ${remaining < 0 ? "over" : "steady"}`;
+  }
+
   function renderMacros(day) {
     const goals = day.goals || {};
     const totals = day.totals || {};
@@ -63,10 +128,10 @@ document.addEventListener("DOMContentLoaded", function () {
       const total = Number(totals[macro.key] || 0);
       const goal = Number(goals[macro.goalKey] || 0);
       const remain = Number(remaining[macro.key] || 0);
-      const percent = goal > 0 ? Math.min(120, Math.round((total / goal) * 100)) : 0;
+      const percent = goal > 0 ? Math.min(100, Math.round((total / goal) * 100)) : 0;
       const remainingLabel = goal > 0
-        ? (remain >= 0 ? `${formatMacro(remain)} ${macro.unit} remaining` : `${formatMacro(Math.abs(remain))} ${macro.unit} over goal`)
-        : "Set a goal to track progress";
+        ? (remain >= 0 ? `${formatMacro(remain)} ${macro.unit} left` : `${formatMacro(Math.abs(remain))} ${macro.unit} over`)
+        : "No goal set";
 
       return `
         <article class="macro-card ${macro.accent}">
@@ -75,9 +140,52 @@ document.addEventListener("DOMContentLoaded", function () {
             <strong>${formatMacro(total)}<small>${macro.unit}</small></strong>
           </div>
           <div class="macro-progress"><span style="width:${percent}%"></span></div>
-          <p>${goal > 0 ? `${formatMacro(total)} / ${formatMacro(goal)} ${macro.unit}` : `No ${macro.label.toLowerCase()} goal`}</p>
-          <small>${remainingLabel}</small>
+          <p>${goal > 0 ? `Goal ${formatMacro(goal)} ${macro.unit}` : `No ${macro.label.toLowerCase()} goal`}</p>
+          <small class="macro-remaining ${goal > 0 && remain < 0 ? "over" : ""}">${remainingLabel}</small>
         </article>
+      `;
+    }).join("");
+  }
+
+  function sumEntriesByMeal(entries) {
+    const meals = ["breakfast", "lunch", "dinner", "snack"];
+    const totalsByMeal = Object.fromEntries(meals.map((meal) => [meal, {
+      calories: 0,
+      protein: 0,
+      carbs: 0,
+      fat: 0,
+      count: 0
+    }]));
+
+    (entries || []).forEach(function (entry) {
+      const meal = totalsByMeal[entry.mealType] ? entry.mealType : "snack";
+      totalsByMeal[meal].calories += Number(entry.calories || 0);
+      totalsByMeal[meal].protein += Number(entry.protein || 0);
+      totalsByMeal[meal].carbs += Number(entry.carbs || 0);
+      totalsByMeal[meal].fat += Number(entry.fat || 0);
+      totalsByMeal[meal].count += 1;
+    });
+
+    return totalsByMeal;
+  }
+
+  function mealTitle(meal) {
+    return meal.charAt(0).toUpperCase() + meal.slice(1);
+  }
+
+  function renderMealBreakdown(entries) {
+    const totalsByMeal = sumEntriesByMeal(entries);
+    mealBreakdown.innerHTML = Object.entries(totalsByMeal).map(function ([meal, totals]) {
+      const meta = totals.count > 0
+        ? `${formatMacro(totals.calories)} kcal · ${formatMacro(totals.protein)}g protein · ${formatMacro(totals.carbs)}g carbs · ${formatMacro(totals.fat)}g fat`
+        : "No food logged";
+
+      return `
+        <div class="meal-breakdown-card ${totals.count > 0 ? "has-food" : ""}">
+          <span>${mealTitle(meal)}</span>
+          <strong>${totals.count > 0 ? `${formatMacro(totals.calories)} kcal` : "—"}</strong>
+          <p>${meta}</p>
+        </div>
       `;
     }).join("");
   }
@@ -142,10 +250,13 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function renderDay(day) {
+    const entries = Array.isArray(day.entries) ? day.entries : [];
     currentDay = day;
+    renderFuelSummary(day);
     renderMacros(day);
+    renderMealBreakdown(entries);
     renderGoals(day.goals || {});
-    renderEntries(day.entries || []);
+    renderEntries(entries);
   }
 
   async function loadDay() {

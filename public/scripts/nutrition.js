@@ -54,8 +54,13 @@ document.addEventListener("DOMContentLoaded", function () {
     return Number.isFinite(value) && value >= 0 ? value : 0;
   }
 
-  function formatMacro(value) {
+  function safeNumber(value) {
     const number = Number(value || 0);
+    return Number.isFinite(number) ? number : 0;
+  }
+
+  function formatMacro(value) {
+    const number = safeNumber(value);
     return Number.isInteger(number) ? String(number) : number.toFixed(1);
   }
 
@@ -70,10 +75,10 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function getFuelStatus(goals, totals) {
-    const calorieGoal = Number(goals.caloriesGoal || 0);
-    const calories = Number(totals.calories || 0);
-    const proteinGoal = Number(goals.proteinGoal || 0);
-    const protein = Number(totals.protein || 0);
+    const calorieGoal = safeNumber(goals.caloriesGoal);
+    const calories = safeNumber(totals.calories);
+    const proteinGoal = safeNumber(goals.proteinGoal);
+    const protein = safeNumber(totals.protein);
 
     if (calorieGoal <= 0) {
       return "Set a calorie goal to unlock your daily fuel summary.";
@@ -97,8 +102,8 @@ document.addEventListener("DOMContentLoaded", function () {
   function renderFuelSummary(day) {
     const goals = day.goals || {};
     const totals = day.totals || {};
-    const calorieGoal = Number(goals.caloriesGoal || 0);
-    const calories = Number(totals.calories || 0);
+    const calorieGoal = safeNumber(goals.caloriesGoal);
+    const calories = safeNumber(totals.calories);
     const remaining = calorieGoal - calories;
 
     fuelDayLabel.textContent = selectedDayLabel();
@@ -106,7 +111,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (calorieGoal <= 0) {
       fuelCaloriesMain.textContent = `${formatMacro(calories)} kcal eaten`;
       fuelCaloriesMeta.textContent = "Set a calorie goal to unlock your daily fuel summary.";
-      fuelStatus.textContent = "No pressure — goals can be set on the right.";
+      fuelStatus.textContent = "Set a calorie goal to unlock your daily fuel summary.";
       fuelStatus.className = "fuel-status neutral";
       return;
     }
@@ -125,9 +130,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const remaining = day.remaining || {};
 
     macroGrid.innerHTML = macros.map(function (macro) {
-      const total = Number(totals[macro.key] || 0);
-      const goal = Number(goals[macro.goalKey] || 0);
-      const remain = Number(remaining[macro.key] || 0);
+      const total = safeNumber(totals[macro.key]);
+      const goal = safeNumber(goals[macro.goalKey]);
+      const remain = safeNumber(remaining[macro.key]);
       const percent = goal > 0 ? Math.min(100, Math.round((total / goal) * 100)) : 0;
       const remainingLabel = goal > 0
         ? (remain >= 0 ? `${formatMacro(remain)} ${macro.unit} left` : `${formatMacro(Math.abs(remain))} ${macro.unit} over`)
@@ -159,10 +164,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     (entries || []).forEach(function (entry) {
       const meal = totalsByMeal[entry.mealType] ? entry.mealType : "snack";
-      totalsByMeal[meal].calories += Number(entry.calories || 0);
-      totalsByMeal[meal].protein += Number(entry.protein || 0);
-      totalsByMeal[meal].carbs += Number(entry.carbs || 0);
-      totalsByMeal[meal].fat += Number(entry.fat || 0);
+      totalsByMeal[meal].calories += safeNumber(entry.calories);
+      totalsByMeal[meal].protein += safeNumber(entry.protein);
+      totalsByMeal[meal].carbs += safeNumber(entry.carbs);
+      totalsByMeal[meal].fat += safeNumber(entry.fat);
       totalsByMeal[meal].count += 1;
     });
 

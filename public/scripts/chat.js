@@ -217,6 +217,33 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   };
 
+    "upper body": {
+      title: "Upper body workout",
+      target: "upper body",
+      warmup: [
+        { name: "Push-ups", sets: 2, reps: "8-10" },
+        { name: "Band pull-aparts", sets: 2, reps: "15" },
+        { name: "Light dumbbell press", sets: 2, reps: "12" }
+      ],
+      exercises: [
+        { name: "Bench press", sets: 3, reps: "8-10", notes: "Push strength" },
+        { name: "Lat pulldown", sets: 3, reps: "10-12", notes: "Pull strength" },
+        { name: "Shoulder press", sets: 3, reps: "8-10", notes: "Controlled overhead press" },
+        { name: "Seated cable row", sets: 3, reps: "10-12", notes: "Back thickness" },
+        { name: "Lateral raise", sets: 3, reps: "12-15", notes: "Light shoulder work" },
+        { name: "Tricep pushdown", sets: 2, reps: "12", notes: "Arm finisher" },
+        { name: "Bicep curl", sets: 2, reps: "12", notes: "Arm finisher" }
+      ],
+      cooldown: [
+        { name: "Chest stretch", duration: "1 min" },
+        { name: "Lat stretch", duration: "1 min" },
+        { name: "Shoulder stretch", duration: "1 min" }
+      ]
+    }
+  };
+
+  let lastCoachAction = null;
+
   const numberWords = new Map([
     ["one", 1], ["two", 2], ["three", 3], ["four", 4], ["five", 5],
     ["six", 6], ["seven", 7], ["eight", 8], ["nine", 9], ["ten", 10]
@@ -395,26 +422,15 @@ document.addEventListener("DOMContentLoaded", function () {
     return bestMatch ? bestMatch.answer : null;
   }
 
-  function detectWorkoutPlanTarget(rawQuestion) {
-    const question = normalize(rawQuestion);
-    const asksForPlan = /workout|plan|session|routine|working on|training/.test(question)
-      && /create|make|build|give|today|1hr|hour|efficient|working on|training/.test(question);
-
-    if (!asksForPlan) {
-      return null;
-    }
-
-    if (/full body|whole body/.test(question)) {
-      return "full body";
-    }
-
+  function findPlanTarget(question) {
     const targetAliases = [
       { target: "chest", aliases: ["chest", "push day"] },
       { target: "back", aliases: ["back", "pull day"] },
-      { target: "legs", aliases: ["leg", "legs", "leg day", "lower body"] },
+      { target: "legs", aliases: ["leg", "legs", "leg day", "lower body", "lowerbody"] },
       { target: "shoulders", aliases: ["shoulder", "shoulders", "shoulder day"] },
       { target: "arms", aliases: ["arm", "arms", "arm day"] },
-      { target: "full body", aliases: ["full body", "whole body", "upper body"] }
+      { target: "upper body", aliases: ["upper body", "upperbody", "upper"] },
+      { target: "full body", aliases: ["full body", "whole body"] }
     ];
 
     const match = targetAliases.find(function (entry) {
@@ -423,7 +439,22 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
 
-    return match ? match.target : "unknown";
+    return match ? match.target : null;
+  }
+
+  function detectWorkoutPlanTarget(rawQuestion) {
+    const question = normalize(rawQuestion);
+    const asksForPlan = /workout|plan|session|routine|working on|training/.test(question)
+      && /create|make|build|give|today|1hr|hour|efficient|working on|training/.test(question);
+    const followUpPlanRequest = lastCoachAction === "workout-plan"
+      && /^(how about|what about|do|make|create|build|give me|can you do|and)\b/.test(question);
+    const target = findPlanTarget(question);
+
+    if (!asksForPlan && !(followUpPlanRequest && target)) {
+      return null;
+    }
+
+    return target || "unknown";
   }
 
   function buildWorkoutPlan(target) {
@@ -484,6 +515,7 @@ document.addEventListener("DOMContentLoaded", function () {
         addMessage("bot", planFollowUpAnswer());
       } else {
         addWorkoutPlanMessage(buildWorkoutPlan(planTarget));
+        lastCoachAction = "workout-plan";
       }
       chatInput.value = "";
       chatInput.focus();

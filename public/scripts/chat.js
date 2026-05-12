@@ -147,6 +147,10 @@ document.addEventListener("DOMContentLoaded", function () {
     return new RegExp(`(^|\\s)${escapedAlias}(\\s|$)`).test(text);
   }
 
+  function aliasScore(alias) {
+    return alias.split(/\s+/).length * 100 + alias.length;
+  }
+
   function findFood(text) {
     return foods.find((food) => food.aliases.some((alias) => hasAlias(text, alias)));
   }
@@ -183,8 +187,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function workoutAnswer(rawQuestion) {
     const question = normalize(rawQuestion);
-    const exact = workoutAnswers.find((entry) => entry.keys.some((key) => question.includes(key)));
-    return exact ? exact.answer : null;
+    let bestMatch = null;
+
+    workoutAnswers.forEach(function (entry) {
+      entry.keys.forEach(function (key) {
+        if (!hasAlias(question, key)) {
+          return;
+        }
+
+        const score = aliasScore(key);
+        if (!bestMatch || score > bestMatch.score) {
+          bestMatch = { answer: entry.answer, score };
+        }
+      });
+    });
+
+    return bestMatch ? bestMatch.answer : null;
   }
 
   function localAnswer(question) {

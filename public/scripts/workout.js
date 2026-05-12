@@ -316,7 +316,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     workoutTitle.value = draft.title || "Coach Fox workout";
     workoutDate.value = new Date().toISOString().slice(0, 10);
     workoutNotes.value = [
-      "Coach Fox plan draft. Review weights before saving.",
+      "Coach Fox plan draft — not saved yet.",
+      "Weights are blank on purpose. Fill in the real weight you use for each set before saving.",
       planItemsToNotes("Warm-up", draft.warmup),
       planItemsToNotes("Cooldown", draft.cooldown),
       draft.restGuidance ? `Rest:\n- ${draft.restGuidance}\n- Use a weight you can control. Stop if something hurts.` : ""
@@ -504,11 +505,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     formData.append("setNumber", videoClarifySetNumber.value.trim());
   }
 
-  function collectSets(card, exerciseIndex) {
+  function collectSets(card, exerciseIndex, exerciseLabel) {
     const rows = Array.from(card.querySelectorAll(".set-row"));
+    const label = exerciseLabel || `exercise ${exerciseIndex + 1}`;
 
     if (rows.length === 0) {
-      throw new Error(`Exercise ${exerciseIndex + 1} needs at least one set.`);
+      throw new Error(`${label} needs at least one set.`);
     }
 
     return rows.map(function (row, setIndex) {
@@ -517,11 +519,11 @@ document.addEventListener("DOMContentLoaded", async function () {
       const notes = row.querySelector(".set-notes").value.trim();
 
       if (!weight || Number(weight) <= 0) {
-        throw new Error(`Set ${setIndex + 1} in exercise ${exerciseIndex + 1} needs a valid weight.`);
+        throw new Error(`Add the real weight you used for Set ${setIndex + 1} in ${label}.`);
       }
 
       if (!reps || Number(reps) <= 0) {
-        throw new Error(`Set ${setIndex + 1} in exercise ${exerciseIndex + 1} needs valid reps.`);
+        throw new Error(`Add valid reps for Set ${setIndex + 1} in ${label}.`);
       }
 
       return {
@@ -541,11 +543,16 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     return cards.map(function (card, exerciseIndex) {
       const exerciseId = card.querySelector(".exercise-select").value;
+      const select = card.querySelector(".exercise-select");
+      const selectedOption = select.options[select.selectedIndex];
       const notes = card.querySelector(".exercise-notes").value.trim();
       const customName = card.querySelector(".custom-name").value.trim();
       const customMuscleGroup = card.querySelector(".custom-muscle-group").value.trim();
       const customCategory = card.querySelector(".custom-category").value.trim();
-      const sets = collectSets(card, exerciseIndex);
+      const exerciseLabel = exerciseId === "custom"
+        ? (customName || `custom exercise ${exerciseIndex + 1}`)
+        : (selectedOption && selectedOption.text ? selectedOption.text : `exercise ${exerciseIndex + 1}`);
+      const sets = collectSets(card, exerciseIndex, exerciseLabel);
 
       if (!exerciseId) {
         throw new Error(`Pick an exercise for block ${exerciseIndex + 1}.`);

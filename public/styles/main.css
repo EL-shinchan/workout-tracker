@@ -2918,3 +2918,39 @@ textarea:focus {
     letter-spacing: -0.055em;
   }
 }
+
+/* Coach Fox workout plan drafts */
+.workout-plan-message {
+  gap: 10px;
+}
+
+.workout-plan-text {
+  width: min(100%, 760px);
+  margin: 0;
+  padding: 16px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  border: 1px solid rgba(38, 49, 71, 0.08);
+  border-radius: 22px;
+  color: #172033;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(255, 215, 107, 0.2), transparent 34%),
+    rgba(255, 255, 255, 0.82);
+  box-shadow: 0 12px 28px rgba(46, 57, 89, 0.08);
+  font: inherit;
+  font-weight: 800;
+  line-height: 1.55;
+}
+
+.workout-plan-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.plan-draft-status {
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 850;
+}

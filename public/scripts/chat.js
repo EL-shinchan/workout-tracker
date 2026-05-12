@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const chatInput = document.getElementById("chatInput");
   const promptChips = Array.from(document.querySelectorAll(".prompt-chip"));
   const AI_UNAVAILABLE_MESSAGE = "Coach Fox AI is unavailable right now. I can still answer common food and exercise basics locally — try asking about lat pulldown, lateral raise, protein, or calories.";
+  const WORKOUT_PLAN_DRAFT_KEY = "ironLogCoachWorkoutPlanDraft";
 
   const foods = [
     { name: "large egg", aliases: ["egg", "eggs"], serving: "1 large egg", protein: 6, calories: 70 },
@@ -93,6 +94,129 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   ];
 
+  const workoutPlanTemplates = {
+    chest: {
+      title: "Chest workout",
+      target: "chest",
+      warmup: [
+        { name: "Push-ups", sets: 3, reps: "10" },
+        { name: "Band pull-aparts", sets: 2, reps: "15" },
+        { name: "Light dumbbell press", sets: 2, reps: "12" }
+      ],
+      exercises: [
+        { name: "Bench press", sets: 4, reps: "10-12", notes: "Main chest press" },
+        { name: "Incline dumbbell press", sets: 3, reps: "10-12", notes: "Upper chest focus" },
+        { name: "Cable fly", sets: 3, reps: "12-15", notes: "Control the stretch" },
+        { name: "Tricep pushdown", sets: 3, reps: "12", notes: "Elbows close" },
+        { name: "Plank", sets: 3, reps: "45 sec", notes: "Core finisher" }
+      ],
+      cooldown: [
+        { name: "Chest doorway stretch", duration: "2 min" },
+        { name: "Shoulder stretch", duration: "2 min" }
+      ]
+    },
+    back: {
+      title: "Back workout",
+      target: "back",
+      warmup: [
+        { name: "Band pull-aparts", sets: 2, reps: "15" },
+        { name: "Dead hangs", sets: 2, reps: "20 sec" },
+        { name: "Light cable row", sets: 2, reps: "12" }
+      ],
+      exercises: [
+        { name: "Lat pulldown", sets: 4, reps: "10-12", notes: "Elbows down toward ribs" },
+        { name: "Seated cable row", sets: 3, reps: "10-12", notes: "Chest proud" },
+        { name: "Dumbbell row", sets: 3, reps: "10", notes: "Each side" },
+        { name: "Face pull", sets: 3, reps: "12-15", notes: "Rear delts and upper back" },
+        { name: "Back extension", sets: 2, reps: "12", notes: "Controlled reps" }
+      ],
+      cooldown: [
+        { name: "Lat stretch", duration: "2 min" },
+        { name: "Child's pose breathing", duration: "2 min" }
+      ]
+    },
+    legs: {
+      title: "Leg workout",
+      target: "legs",
+      warmup: [
+        { name: "Bodyweight squats", sets: 3, reps: "10" },
+        { name: "Walking lunges", sets: 2, reps: "10 each leg" },
+        { name: "Light leg press", sets: 2, reps: "12" }
+      ],
+      exercises: [
+        { name: "Leg press", sets: 4, reps: "10-12", notes: "Knees track with toes" },
+        { name: "Romanian deadlift", sets: 3, reps: "10", notes: "Hip hinge" },
+        { name: "Leg extension", sets: 3, reps: "12-15", notes: "Controlled squeeze" },
+        { name: "Leg curl", sets: 3, reps: "12-15", notes: "Hamstrings" },
+        { name: "Calf raise", sets: 4, reps: "12-15", notes: "Full range" }
+      ],
+      cooldown: [
+        { name: "Quad stretch", duration: "2 min" },
+        { name: "Hamstring stretch", duration: "2 min" }
+      ]
+    },
+    shoulders: {
+      title: "Shoulder workout",
+      target: "shoulders",
+      warmup: [
+        { name: "Arm circles", sets: 2, reps: "20 sec" },
+        { name: "Band pull-aparts", sets: 2, reps: "15" },
+        { name: "Light lateral raise", sets: 2, reps: "12" }
+      ],
+      exercises: [
+        { name: "Shoulder press", sets: 4, reps: "8-10", notes: "Brace core" },
+        { name: "Lateral raise", sets: 4, reps: "12-15", notes: "Light and controlled" },
+        { name: "Rear delt fly", sets: 3, reps: "12-15", notes: "No swinging" },
+        { name: "Face pull", sets: 3, reps: "12-15", notes: "Pull toward face" },
+        { name: "Plank", sets: 3, reps: "45 sec", notes: "Core finisher" }
+      ],
+      cooldown: [
+        { name: "Shoulder stretch", duration: "2 min" },
+        { name: "Upper trap stretch", duration: "2 min" }
+      ]
+    },
+    arms: {
+      title: "Arm workout",
+      target: "arms",
+      warmup: [
+        { name: "Light curls", sets: 2, reps: "15" },
+        { name: "Light tricep pushdowns", sets: 2, reps: "15" }
+      ],
+      exercises: [
+        { name: "Bicep curl", sets: 4, reps: "10-12", notes: "Elbows still" },
+        { name: "Tricep pushdown", sets: 4, reps: "10-12", notes: "Elbows close" },
+        { name: "Hammer curl", sets: 3, reps: "10-12", notes: "Neutral grip" },
+        { name: "Overhead tricep extension", sets: 3, reps: "10-12", notes: "Controlled stretch" },
+        { name: "Cable curl", sets: 2, reps: "12-15", notes: "Smooth finish" }
+      ],
+      cooldown: [
+        { name: "Biceps stretch", duration: "1 min" },
+        { name: "Triceps stretch", duration: "1 min" }
+      ]
+    },
+    "full body": {
+      title: "Full body workout",
+      target: "full body",
+      warmup: [
+        { name: "Bodyweight squats", sets: 2, reps: "10" },
+        { name: "Push-ups", sets: 2, reps: "8" },
+        { name: "Band pull-aparts", sets: 2, reps: "15" }
+      ],
+      exercises: [
+        { name: "Leg press", sets: 3, reps: "8-10", notes: "Lower body" },
+        { name: "Bench press", sets: 3, reps: "8-10", notes: "Push" },
+        { name: "Lat pulldown", sets: 3, reps: "10-12", notes: "Pull" },
+        { name: "Romanian deadlift", sets: 3, reps: "10", notes: "Hip hinge" },
+        { name: "Shoulder press", sets: 2, reps: "10", notes: "Finish controlled" }
+      ],
+      cooldown: [
+        { name: "Chest stretch", duration: "1 min" },
+        { name: "Lat stretch", duration: "1 min" },
+        { name: "Hamstring stretch", duration: "1 min" }
+      ]
+    }
+  };
+
   const numberWords = new Map([
     ["one", 1], ["two", 2], ["three", 3], ["four", 4], ["five", 5],
     ["six", 6], ["seven", 7], ["eight", 8], ["nine", 9], ["ten", 10]
@@ -107,6 +231,69 @@ document.addEventListener("DOMContentLoaded", function () {
     const bubble = document.createElement("p");
     bubble.textContent = text;
     message.append(label, bubble);
+    chatMessages.append(message);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    return message;
+  }
+
+  function formatPlanSection(title, items) {
+    return `${title}:\n${items.map(function (item) {
+      const detail = item.duration || `${item.sets}×${item.reps}`;
+      return `- ${item.name} — ${detail}`;
+    }).join("\n")}`;
+  }
+
+  function formatWorkoutPlan(plan) {
+    return [
+      `${plan.title} — about ${plan.durationMinutes} minutes`,
+      formatPlanSection("Warm-up", plan.warmup),
+      formatPlanSection("Workout", plan.exercises),
+      formatPlanSection("Cooldown", plan.cooldown),
+      `Rest:\n- ${plan.restGuidance}\n- Use a weight you can control. Stop if something hurts.`
+    ].join("\n\n");
+  }
+
+  function savePlanDraftAndOpenWorkout(plan, statusElement) {
+    try {
+      localStorage.setItem(WORKOUT_PLAN_DRAFT_KEY, JSON.stringify(plan));
+      window.location.href = "workout.html?planDraft=coach-fox";
+    } catch (_error) {
+      if (statusElement) {
+        statusElement.textContent = "Could not open the workout draft. Copy the plan for now.";
+      }
+    }
+  }
+
+  function addWorkoutPlanMessage(plan) {
+    const message = document.createElement("div");
+    message.className = "chat-message bot workout-plan-message";
+
+    const label = document.createElement("span");
+    label.className = "chat-message-label";
+    label.textContent = "Coach Fox";
+
+    const pre = document.createElement("pre");
+    pre.className = "workout-plan-text";
+    pre.textContent = formatWorkoutPlan(plan);
+
+    const actions = document.createElement("div");
+    actions.className = "workout-plan-actions";
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "button button-primary";
+    button.textContent = "Start this workout";
+
+    const status = document.createElement("span");
+    status.className = "plan-draft-status";
+    status.textContent = "You’ll review weights before saving.";
+
+    button.addEventListener("click", function () {
+      savePlanDraftAndOpenWorkout(plan, status);
+    });
+
+    actions.append(button, status);
+    message.append(label, pre, actions);
     chatMessages.append(message);
     chatMessages.scrollTop = chatMessages.scrollHeight;
     return message;
@@ -205,6 +392,47 @@ document.addEventListener("DOMContentLoaded", function () {
     return bestMatch ? bestMatch.answer : null;
   }
 
+  function detectWorkoutPlanTarget(rawQuestion) {
+    const question = normalize(rawQuestion);
+    const asksForPlan = /workout|plan|session|routine|working on|training/.test(question)
+      && /create|make|build|give|today|1hr|hour|efficient|working on|training/.test(question);
+
+    if (!asksForPlan) {
+      return null;
+    }
+
+    if (/full body|whole body/.test(question)) {
+      return "full body";
+    }
+
+    for (const target of ["chest", "back", "legs", "shoulders", "arms"]) {
+      if (hasAlias(question, target)) {
+        return target;
+      }
+    }
+
+    return "unknown";
+  }
+
+  function buildWorkoutPlan(target) {
+    const template = workoutPlanTemplates[target];
+    if (!template) {
+      return null;
+    }
+
+    return {
+      source: "coach-fox",
+      createdAt: new Date().toISOString(),
+      durationMinutes: 60,
+      restGuidance: "60–90 sec between sets",
+      ...JSON.parse(JSON.stringify(template))
+    };
+  }
+
+  function planFollowUpAnswer() {
+    return "What are we training today — chest, back, legs, shoulders, arms, or full body?";
+  }
+
   function localAnswer(question) {
     const cleaned = normalize(question);
     if (!cleaned) {
@@ -229,7 +457,28 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     addMessage("user", text);
-    const reply = localAnswer(text);
+
+    const safetyReply = safetyAnswer(text);
+    if (safetyReply) {
+      addMessage("bot", safetyReply);
+      chatInput.value = "";
+      chatInput.focus();
+      return;
+    }
+
+    const planTarget = detectWorkoutPlanTarget(text);
+    if (planTarget) {
+      if (planTarget === "unknown") {
+        addMessage("bot", planFollowUpAnswer());
+      } else {
+        addWorkoutPlanMessage(buildWorkoutPlan(planTarget));
+      }
+      chatInput.value = "";
+      chatInput.focus();
+      return;
+    }
+
+    const reply = nutritionAnswer(text) || workoutAnswer(text);
     if (reply) {
       addMessage("bot", reply);
     } else {

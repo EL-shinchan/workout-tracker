@@ -32,6 +32,8 @@ document.addEventListener("DOMContentLoaded", async function () {
   const params = new URLSearchParams(window.location.search);
   const editWorkoutId = params.get("edit");
   const draftToLoadId = params.get("draft");
+  const planDraftSource = params.get("planDraft");
+  const WORKOUT_PLAN_DRAFT_KEY = "ironLogCoachWorkoutPlanDraft";
 
   let exercises = [];
   let activePhotoDraft = null;
@@ -253,6 +255,99 @@ document.addEventListener("DOMContentLoaded", async function () {
       notes: document.getElementById("draftWorkoutNotes").value.trim(),
       exercises: draftExercises
     };
+  }
+
+  function firstPlannedRepValue(reps) {
+    const text = String(reps || "").trim();
+    const match = text.match(/\d+/);
+    return match ? Number(match[0]) : 1;
+  }
+
+  function plannedSetNotes(reps, notes) {
+    const text = String(reps || "").trim();
+    const noteList = [];
+    if (text) {
+      noteList.push(/sec|hold|time/i.test(text) ? `Plan: ${text} hold` : `Plan: ${text} reps`);
+    }
+    if (notes) {
+      noteList.push(notes);
+    }
+    return noteList.join(" • ");
+  }
+
+  function planItemsToNotes(title, items) {
+    if (!Array.isArray(items) || items.length === 0) {
+      return "";
+    }
+
+    return `${title}:\n${items.map(function (item) {
+      const detail = item.duration || `${item.sets}×${item.reps}`;
+      return `- ${item.name} — ${detail}`;
+    }).join("\n")}`;
+  }
+
+  function loadCoachWorkoutPlanDraft() {
+    if (planDraftSource !== "coach-fox" || editWorkoutId) {
+      return false;
+    }
+
+    const rawDraft = localStorage.getItem(WORKOUT_PLAN_DRAFT_KEY);
+    if (!rawDraft) {
+      window.appUtils.setMessage(formStatus, "No Coach Fox workout plan draft found. Start a new workout normally.", "error");
+      return false;
+    }
+
+    let draft;
+    try {
+      draft = JSON.parse(rawDraft);
+    } catch (_error) {
+      localStorage.removeItem(WORKOUT_PLAN_DRAFT_KEY);
+      window.appUtils.setMessage(formStatus, "Coach Fox workout plan draft was unreadable. Start a new workout normally.", "error");
+      return false;
+    }
+
+    const planExercises = Array.isArray(draft.exercises) ? draft.exercises : [];
+    if (planExercises.length === 0) {
+      localStorage.removeItem(WORKOUT_PLAN_DRAFT_KEY);
+      window.appUtils.setMessage(formStatus, "Coach Fox plan had no exercises. Start a new workout normally.", "error");
+      return false;
+    }
+
+    workoutTitle.value = draft.title || "Coach Fox workout";
+    workoutDate.value = new Date().toISOString().slice(0, 10);
+    workoutNotes.value = [
+      "Coach Fox plan draft. Review weights before saving.",
+      planItemsToNotes("Warm-up", draft.warmup),
+      planItemsToNotes("Cooldown", draft.cooldown),
+      draft.restGuidance ? `Rest:\n- ${draft.restGuidance}\n- Use a weight you can control. Stop if something hurts.` : ""
+    ].filter(Boolean).join("\n\n");
+
+    exerciseList.innerHTML = "";
+    planExercises.forEach(function (exercise) {
+      const setCount = Math.max(1, Number(exercise.sets || 1));
+      addExerciseCard({
+        name: exercise.name,
+        notes: exercise.notes || "Coach Fox planned exercise",
+        sets: Array.from({ length: setCount }, function () {
+          return {
+            weight: "",
+            reps: firstPlannedRepValue(exercise.reps),
+            notes: plannedSetNotes(exercise.reps, exercise.notes)
+          };
+        })
+      });
+    });
+
+    localStorage.removeItem(WORKOUT_PLAN_DRAFT_KEY);
+    if (pageTitle) {
+      pageTitle.textContent = "Start Coach Fox workout";
+    }
+    if (pageCopy) {
+      pageCopy.textContent = "Coach Fox loaded the plan. Fill in real weights, adjust anything, then save normally.";
+    }
+    window.appUtils.setMessage(formStatus, "Coach Fox plan loaded. Fill in real weights before saving.", "success");
+    exerciseList.scrollIntoView({ behavior: "smooth", block: "start" });
+    return true;
   }
 
   function addDraftToWorkout() {
@@ -709,6 +804,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
   } else {
     addExerciseCard();
+    loadCoachWorkoutPlanDraft();
   }
 
   const processedJobs = await loadProcessedDrafts();

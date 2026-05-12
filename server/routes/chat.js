@@ -7,11 +7,14 @@ const AI_UNAVAILABLE_MESSAGE = "Coach Fox AI is unavailable right now. I can sti
 
 function safeMedicalReply(message) {
   const text = String(message || "").toLowerCase();
-  if (!/pain|injur|hurt|sick|ill|allerg|vomit|dizzy|faint|fever|breath|chest|medical|doctor|medicine|medication/.test(text)) {
+  const hasChestSafetyContext = /chest\s+(pain|hurt|hurts|tight|tightness)|pain\s+in\s+(my\s+)?chest|short\s+of\s+breath|trouble\s+breath|can't\s+breath|can’t\s+breath|cant\s+breath/.test(text);
+  const hasGeneralSafetyContext = /pain|injur|hurt|sick|ill|allerg|vomit|dizzy|faint|fever|breath|medical|doctor|medicine|medication/.test(text);
+
+  if (!hasGeneralSafetyContext && !hasChestSafetyContext) {
     return null;
   }
 
-  if (/chest|breath|faint|severe|numb|can't walk|can’t walk|cant walk|cannot walk|high fever/.test(text)) {
+  if (hasChestSafetyContext || /breath|faint|severe|numb|can't walk|can’t walk|cant walk|cannot walk|high fever/.test(text)) {
     return "That sounds serious — please tell an adult now and get medical help quickly. Stop training, rest somewhere safe, and don’t try to push through it. Coach Fox can help with basics, but this needs real-world help.";
   }
 

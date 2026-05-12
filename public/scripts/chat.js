@@ -344,11 +344,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function safetyAnswer(rawQuestion) {
     const question = normalize(rawQuestion);
-    if (!/pain|injur|hurt|doctor|medical|sick|ill|allerg|vomit|dizzy|faint|fever|breath|chest|medicine|medication/.test(question)) {
+    const hasChestSafetyContext = /chest\s+(pain|hurt|hurts|tight|tightness)|pain\s+in\s+(my\s+)?chest|short\s+of\s+breath|trouble\s+breath|can't\s+breath|can’t\s+breath|cant\s+breath/.test(question);
+    const hasGeneralSafetyContext = /pain|injur|hurt|doctor|medical|sick|ill|allerg|vomit|dizzy|faint|fever|breath|medicine|medication/.test(question);
+
+    if (!hasGeneralSafetyContext && !hasChestSafetyContext) {
       return null;
     }
 
-    if (/chest|breath|faint|severe|numb|can't walk|can’t walk|cant walk|cannot walk|high fever/.test(question)) {
+    if (hasChestSafetyContext || /breath|faint|severe|numb|can't walk|can’t walk|cant walk|cannot walk|high fever/.test(question)) {
       return "That sounds serious — please tell an adult now and get medical help quickly. Stop training, rest somewhere safe, and don’t try to push through it. Coach Fox can help with basics, but this needs real-world help.";
     }
 
@@ -405,13 +408,22 @@ document.addEventListener("DOMContentLoaded", function () {
       return "full body";
     }
 
-    for (const target of ["chest", "back", "legs", "shoulders", "arms"]) {
-      if (hasAlias(question, target)) {
-        return target;
-      }
-    }
+    const targetAliases = [
+      { target: "chest", aliases: ["chest", "push day"] },
+      { target: "back", aliases: ["back", "pull day"] },
+      { target: "legs", aliases: ["leg", "legs", "leg day", "lower body"] },
+      { target: "shoulders", aliases: ["shoulder", "shoulders", "shoulder day"] },
+      { target: "arms", aliases: ["arm", "arms", "arm day"] },
+      { target: "full body", aliases: ["full body", "whole body", "upper body"] }
+    ];
 
-    return "unknown";
+    const match = targetAliases.find(function (entry) {
+      return entry.aliases.some(function (alias) {
+        return hasAlias(question, alias);
+      });
+    });
+
+    return match ? match.target : "unknown";
   }
 
   function buildWorkoutPlan(target) {

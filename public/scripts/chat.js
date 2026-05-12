@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const chatForm = document.getElementById("chatForm");
   const chatInput = document.getElementById("chatInput");
   const promptChips = Array.from(document.querySelectorAll(".prompt-chip"));
-  const AI_UNAVAILABLE_MESSAGE = "Coach Fox AI is unavailable right now. Local basics still work.";
+  const AI_UNAVAILABLE_MESSAGE = "Coach Fox AI is unavailable right now. I can still answer common food and exercise basics locally — try asking about lat pulldown, lateral raise, protein, or calories.";
 
   const foods = [
     { name: "large egg", aliases: ["egg", "eggs"], serving: "1 large egg", protein: 6, calories: 70 },
@@ -19,6 +19,46 @@ document.addEventListener("DOMContentLoaded", function () {
   ];
 
   const workoutAnswers = [
+    {
+      keys: ["lat pulldown", "lat pull down", "pulldown", "pull down machine"],
+      answer: "Lat pulldown trains your lats, upper back, and biceps. Sit tall, pull the bar toward your upper chest, and think elbows down toward your ribs. Don’t yank with your body — use a weight you can control."
+    },
+    {
+      keys: ["lateral raise", "lat raise", "side raise", "dumbbell raise"],
+      answer: "Lateral raise trains the side of your shoulders. Hold dumbbells by your sides, raise them out until about shoulder height, then lower slowly. Keep it light and controlled — swinging turns it into an ego exercise, not shoulder work."
+    },
+    {
+      keys: ["shoulder press", "overhead press", "military press"],
+      answer: "Shoulder press trains your shoulders and triceps by pressing weight overhead. Brace your core, press straight up, and lower under control. Don’t arch your back hard just to move heavier weight."
+    },
+    {
+      keys: ["bicep curl", "biceps curl", "curl"],
+      answer: "Bicep curls train the front of your upper arm. Keep your elbows mostly still, curl the weight up, then lower slowly. If your whole body is swinging, the weight is too heavy."
+    },
+    {
+      keys: ["tricep pushdown", "triceps pushdown", "pushdown"],
+      answer: "Tricep pushdown trains the back of your upper arm. Keep elbows close to your sides, push the handle down, and squeeze at the bottom. Don’t let your shoulders roll forward."
+    },
+    {
+      keys: ["leg press"],
+      answer: "Leg press trains quads, glutes, and hamstrings by pushing a platform away with your feet. Keep your feet flat and knees tracking the same direction as your toes. Don’t lock your knees hard at the top."
+    },
+    {
+      keys: ["leg curl", "hamstring curl"],
+      answer: "Leg curl trains your hamstrings, the back of your thighs. Curl the pad toward you, pause briefly, then lower slowly. Keep your hips down and don’t bounce the weight."
+    },
+    {
+      keys: ["leg extension", "quad extension"],
+      answer: "Leg extension trains your quads, the front of your thighs. Extend your knees until your legs are nearly straight, then lower with control. Start light if your knees feel sensitive."
+    },
+    {
+      keys: ["romanian deadlift", "rdl"],
+      answer: "Romanian deadlift trains hamstrings, glutes, and your hip hinge. Push your hips back, keep your back neutral, and lower the weight close to your legs. Stop when you feel a hamstring stretch — don’t chase the floor."
+    },
+    {
+      keys: ["calf raise", "calves"],
+      answer: "Calf raises train the calves by lifting your heels up and lowering them slowly. Use a full range of motion and pause at the top. Don’t bounce fast reps — controlled reps work better."
+    },
     {
       keys: ["bench press", "bench"],
       answer: "Bench press is a chest exercise where you press weight upward while lying on a bench. Start light, control the bar, and use a spotter when it gets heavy."

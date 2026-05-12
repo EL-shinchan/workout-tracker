@@ -3,7 +3,7 @@ const { askGemini } = require("../services/geminiChat");
 
 const router = express.Router();
 const MAX_MESSAGE_LENGTH = 800;
-const AI_UNAVAILABLE_MESSAGE = "Coach Fox AI is unavailable right now. Local basics still work.";
+const AI_UNAVAILABLE_MESSAGE = "Coach Fox AI is unavailable right now. I can still answer common food and exercise basics locally — try asking about lat pulldown, lateral raise, protein, or calories.";
 
 function safeMedicalReply(message) {
   const text = String(message || "").toLowerCase();

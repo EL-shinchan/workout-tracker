@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const promptChips = Array.from(document.querySelectorAll(".prompt-chip"));
   const AI_UNAVAILABLE_MESSAGE = "Coach Fox AI is unavailable right now. I can still answer common food and exercise basics locally — try asking about lat pulldown, lateral raise, protein, or calories.";
   const WORKOUT_PLAN_DRAFT_KEY = "ironLogCoachWorkoutPlanDraft";
+  const SAVED_WORKOUT_PLANS_KEY = "ironLogSavedWorkoutPlans";
 
   const foods = [
     { name: "large egg", aliases: ["egg", "eggs"], serving: "1 large egg", protein: 6, calories: 70 },
@@ -310,6 +311,34 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  function readSavedWorkoutPlans() {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(SAVED_WORKOUT_PLANS_KEY) || "[]");
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (_error) {
+      return [];
+    }
+  }
+
+  function saveWorkoutPlan(plan, statusElement) {
+    try {
+      const savedPlans = readSavedWorkoutPlans();
+      const savedPlan = {
+        ...JSON.parse(JSON.stringify(plan)),
+        id: `plan_${Date.now()}`,
+        savedAt: new Date().toISOString()
+      };
+      localStorage.setItem(SAVED_WORKOUT_PLANS_KEY, JSON.stringify([savedPlan, ...savedPlans]));
+      if (statusElement) {
+        statusElement.textContent = "Saved to Workout Plans.";
+      }
+    } catch (_error) {
+      if (statusElement) {
+        statusElement.textContent = "Could not save this plan. You can still start it now.";
+      }
+    }
+  }
+
   function addWorkoutPlanMessage(plan) {
     const message = document.createElement("div");
     message.className = "chat-message bot workout-plan-message";
@@ -330,6 +359,11 @@ document.addEventListener("DOMContentLoaded", function () {
     button.className = "button button-primary";
     button.textContent = "Start this workout";
 
+    const saveButton = document.createElement("button");
+    saveButton.type = "button";
+    saveButton.className = "button button-ghost";
+    saveButton.textContent = "Save plan";
+
     const status = document.createElement("span");
     status.className = "plan-draft-status";
     status.textContent = "You’ll review weights before saving.";
@@ -338,7 +372,11 @@ document.addEventListener("DOMContentLoaded", function () {
       savePlanDraftAndOpenWorkout(plan, status);
     });
 
-    actions.append(button, status);
+    saveButton.addEventListener("click", function () {
+      saveWorkoutPlan(plan, status);
+    });
+
+    actions.append(button, saveButton, status);
     message.append(label, pre, actions);
     chatMessages.append(message);
     chatMessages.scrollTop = chatMessages.scrollHeight;

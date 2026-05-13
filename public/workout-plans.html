@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>History | Workout Tracker</title>
+  <title>Workout Plans | Iron Log</title>
   <meta name="theme-color" content="#ff7a1a" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -30,39 +30,38 @@
     </nav>
   </header>
 
-  <main class="shell">
-    <section class="page-intro">
-      <p class="eyebrow">Session archive</p>
-      <h1>Workout history</h1>
-      <p class="hero-copy">Review old sessions, inspect the exact sets, and keep your memory honest.</p>
+  <main class="shell workout-plans-shell">
+    <section class="hero-panel workout-plans-hero">
+      <div>
+        <p class="eyebrow">Reusable sessions</p>
+        <h1>Workout Plans</h1>
+        <p class="hero-copy">Save good Coach Fox sessions and reuse them later. Start a saved plan, fill in your real weights, then log normally.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="chat.html">Ask Coach Fox</a>
+          <a class="button button-ghost" href="workout.html">New blank workout</a>
+        </div>
+      </div>
+      <div class="plan-status-card workout-plan-count-card">
+        <span class="plan-badge">Saved locally</span>
+        <strong id="savedPlanCount">0</strong>
+        <p>plans saved</p>
+        <small>This device only for V1.</small>
+      </div>
     </section>
 
-    <section class="content-grid two-columns-uneven">
-      <article class="panel">
-        <div class="panel-header">
-          <div>
-            <p class="eyebrow">Newest first</p>
-            <h2>Saved workouts</h2>
-          </div>
+    <section class="panel saved-workout-plans-panel">
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">Library</p>
+          <h2>Saved workout plans</h2>
         </div>
-        <div id="historyList" class="stack-list empty-message">No workouts yet.</div>
-      </article>
-
-      <article class="panel detail-panel" id="historyDetailPanel">
-        <div class="panel-header">
-          <div>
-            <p class="eyebrow">Session detail</p>
-            <h2 id="detailTitle">Pick a workout</h2>
-          </div>
-          <button type="button" class="button button-danger hidden" id="deleteWorkoutButton">Delete workout</button>
-        </div>
-        <div id="historyDetail" class="empty-message">Choose a workout from the left to inspect its exercises and sets.</div>
-      </article>
+      </div>
+      <div id="savedPlansList" class="saved-plans-list empty-message">No saved workout plans yet. Ask Coach Fox for a workout plan, then save it here.</div>
     </section>
   </main>
 
   <script src="scripts/shared.js"></script>
-  <script src="scripts/history.js"></script>
+  <script src="scripts/workout-plans.js"></script>
   <script src="scripts/pwa.js"></script>
 </body>
 </html>

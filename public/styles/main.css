@@ -2954,3 +2954,131 @@ textarea:focus {
   font-size: 0.9rem;
   font-weight: 850;
 }
+
+/* Saved workout plans */
+.workout-plans-shell {
+  max-width: 1120px;
+}
+
+.workout-plans-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(230px, 0.28fr);
+  gap: 24px;
+  align-items: stretch;
+  margin-bottom: 22px;
+  background:
+    radial-gradient(circle at 92% 8%, rgba(98, 188, 255, 0.22), transparent 34%),
+    radial-gradient(circle at 8% 92%, rgba(255, 215, 107, 0.22), transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(244, 250, 255, 0.9));
+}
+
+.workout-plan-count-card strong {
+  font-size: clamp(3rem, 8vw, 5rem);
+}
+
+.saved-plans-list {
+  display: grid;
+  gap: 16px;
+}
+
+.saved-plan-card {
+  padding: 18px;
+  border: 1px solid rgba(38, 49, 71, 0.08);
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(255, 122, 26, 0.12), transparent 34%),
+    rgba(255, 255, 255, 0.72);
+  box-shadow: 0 14px 30px rgba(46, 57, 89, 0.08);
+}
+
+.saved-plan-card-top {
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.saved-plan-card h3 {
+  margin: 4px 0 0;
+  color: #172033;
+}
+
+.saved-plan-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.saved-plan-details {
+  margin-top: 14px;
+}
+
+.saved-plan-details summary {
+  cursor: pointer;
+  color: #8b4300;
+  font-weight: 950;
+}
+
+.saved-plan-sections {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.saved-plan-section,
+.saved-plan-rest {
+  padding: 14px;
+  border: 1px solid rgba(38, 49, 71, 0.08);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.saved-plan-section h4,
+.saved-plan-rest h4 {
+  margin: 0 0 8px;
+  color: #172033;
+}
+
+.saved-plan-section ul {
+  display: grid;
+  gap: 7px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.saved-plan-section li {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  color: var(--muted);
+  font-weight: 850;
+}
+
+.saved-plan-section li strong {
+  color: #172033;
+  white-space: nowrap;
+}
+
+.saved-plan-rest p {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 850;
+}
+
+@media (max-width: 850px) {
+  .workout-plans-hero,
+  .saved-plan-sections {
+    grid-template-columns: 1fr;
+  }
+
+  .saved-plan-card-top {
+    flex-direction: column;
+  }
+
+  .saved-plan-actions {
+    justify-content: flex-start;
+  }
+}

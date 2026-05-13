@@ -95,6 +95,26 @@ document.addEventListener("DOMContentLoaded", function () {
   ];
 
   const workoutPlanTemplates = {
+    "upper chest": {
+      title: "Upper chest workout",
+      target: "upper chest",
+      warmup: [
+        { name: "Push-ups", sets: 3, reps: "10" },
+        { name: "Band pull-aparts", sets: 2, reps: "15" },
+        { name: "Light incline dumbbell press", sets: 2, reps: "12" }
+      ],
+      exercises: [
+        { name: "Incline bench press", sets: 4, reps: "10", notes: "Upper chest main lift" },
+        { name: "Incline dumbbell press", sets: 3, reps: "10-12", notes: "Controlled press" },
+        { name: "Low-to-high cable fly", sets: 3, reps: "12-15", notes: "Upper chest squeeze" },
+        { name: "Machine chest press", sets: 3, reps: "10-12", notes: "Stable chest volume" },
+        { name: "Tricep pushdown", sets: 3, reps: "12", notes: "Pressing support" }
+      ],
+      cooldown: [
+        { name: "Chest doorway stretch", duration: "2 min" },
+        { name: "Shoulder stretch", duration: "2 min" }
+      ]
+    },
     chest: {
       title: "Chest workout",
       target: "chest",
@@ -241,6 +261,7 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   let lastCoachAction = null;
+  let lastWorkoutPlan = null;
 
   const numberWords = new Map([
     ["one", 1], ["two", 2], ["three", 3], ["four", 4], ["five", 5],
@@ -422,6 +443,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function findPlanTarget(question) {
     const targetAliases = [
+      { target: "upper chest", aliases: ["upper chest", "incline chest"] },
       { target: "chest", aliases: ["chest", "push day"] },
       { target: "back", aliases: ["back", "pull day"] },
       { target: "legs", aliases: ["leg", "legs", "leg day", "lower body", "lowerbody"] },
@@ -440,13 +462,18 @@ document.addEventListener("DOMContentLoaded", function () {
     return match ? match.target : null;
   }
 
+  function wantsPlanList(rawQuestion) {
+    const question = normalize(rawQuestion);
+    return /list\s+it\s+out|make\s+it\s+(a\s+)?list|show\s+(me\s+)?(the\s+)?full\s+list|write\s+it\s+as\s+(a\s+)?list|can\s+you\s+(please\s+)?list/.test(question);
+  }
+
   function detectWorkoutPlanTarget(rawQuestion) {
     const question = normalize(rawQuestion);
-    const asksForPlan = /workout|plan|session|routine|working on|training/.test(question)
-      && /create|make|build|give|today|1hr|hour|efficient|working on|training/.test(question);
+    const target = findPlanTarget(question);
+    const hasPlanWords = /workout|plan|session|routine/.test(question);
+    const asksForPlan = hasPlanWords && (target || /create|make|build|give|today|1hr|hour|efficient|working on|training/.test(question));
     const followUpPlanRequest = lastCoachAction === "workout-plan"
       && /^(how about|what about|do|make|create|build|give me|can you do|and)\b/.test(question);
-    const target = findPlanTarget(question);
 
     if (!asksForPlan && !(followUpPlanRequest && target)) {
       return null;
@@ -507,12 +534,21 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
+    if (wantsPlanList(text) && lastWorkoutPlan) {
+      addWorkoutPlanMessage(lastWorkoutPlan);
+      lastCoachAction = "workout-plan";
+      chatInput.value = "";
+      chatInput.focus();
+      return;
+    }
+
     const planTarget = detectWorkoutPlanTarget(text);
     if (planTarget) {
       if (planTarget === "unknown") {
         addMessage("bot", planFollowUpAnswer());
       } else {
-        addWorkoutPlanMessage(buildWorkoutPlan(planTarget));
+        lastWorkoutPlan = buildWorkoutPlan(planTarget);
+        addWorkoutPlanMessage(lastWorkoutPlan);
         lastCoachAction = "workout-plan";
       }
       chatInput.value = "";

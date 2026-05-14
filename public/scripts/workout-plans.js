@@ -127,6 +127,7 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
             <div class="saved-plan-actions">
               <button type="button" class="button button-primary start-saved-plan-button">Start workout</button>
+              <button type="button" class="button button-ghost view-details-button">View details</button>
               <button type="button" class="button button-danger delete-saved-plan-button">Delete</button>
             </div>
           </div>
@@ -146,8 +147,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
     savedPlansList.querySelectorAll(".saved-plan-card").forEach(function (card) {
       const plan = plans.find((candidate) => candidate.id === card.dataset.planId);
+      const details = card.querySelector(".saved-plan-details");
+      const viewDetailsButton = card.querySelector(".view-details-button");
+
       card.querySelector(".start-saved-plan-button").addEventListener("click", function () {
         startPlan(plan);
+      });
+      viewDetailsButton.addEventListener("click", function () {
+        details.open = !details.open;
+        viewDetailsButton.textContent = details.open ? "Hide details" : "View details";
       });
       card.querySelector(".delete-saved-plan-button").addEventListener("click", function () {
         deletePlan(plan.id);

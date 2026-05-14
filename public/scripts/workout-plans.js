@@ -26,6 +26,10 @@ document.addEventListener("DOMContentLoaded", function () {
     return new Date(value).toLocaleDateString(undefined, { month: "short", day: "numeric" });
   }
 
+  function itemDetail(item) {
+    return item.duration || `${item.sets}×${item.reps}`;
+  }
+
   function formatSection(title, items) {
     if (!Array.isArray(items) || items.length === 0) {
       return "";
@@ -36,11 +40,44 @@ document.addEventListener("DOMContentLoaded", function () {
         <h4>${window.appUtils.escapeHtml(title)}</h4>
         <ul>
           ${items.map(function (item) {
-            const detail = item.duration || `${item.sets}×${item.reps}`;
-            return `<li><span>${window.appUtils.escapeHtml(item.name || "Exercise")}</span><strong>${window.appUtils.escapeHtml(detail)}</strong></li>`;
+            return `<li><span>${window.appUtils.escapeHtml(item.name || "Exercise")}</span><strong>${window.appUtils.escapeHtml(itemDetail(item))}</strong></li>`;
           }).join("")}
         </ul>
       </div>
+    `;
+  }
+
+  function formatExercisePreview(exercises) {
+    const list = Array.isArray(exercises) ? exercises : [];
+    if (list.length === 0) {
+      return `<div class="plan-exercise-preview empty-preview">No workout exercises saved.</div>`;
+    }
+
+    const visible = list.slice(0, 3);
+    const remaining = list.length - visible.length;
+    return `
+      <div class="plan-exercise-preview">
+        ${visible.map(function (exercise) {
+          return `
+            <div class="preview-exercise-row">
+              <span>${window.appUtils.escapeHtml(exercise.name || "Exercise")}</span>
+              <strong>${window.appUtils.escapeHtml(itemDetail(exercise))}</strong>
+            </div>
+          `;
+        }).join("")}
+        ${remaining > 0 ? `<div class="preview-more">+${remaining} more</div>` : ""}
+      </div>
+    `;
+  }
+
+  function emptyStateHtml() {
+    return `
+      <article class="saved-plans-empty-card">
+        <span class="photo-drop-icon">🦊</span>
+        <h3>No saved plans yet</h3>
+        <p>Ask Coach Fox for a workout plan, then tap <strong>Save plan</strong>. Your best sessions will appear here.</p>
+        <a class="button button-primary" href="chat.html">Ask Coach Fox</a>
+      </article>
     `;
   }
 
@@ -69,8 +106,8 @@ document.addEventListener("DOMContentLoaded", function () {
     savedPlanCount.textContent = plans.length;
 
     if (plans.length === 0) {
-      savedPlansList.className = "saved-plans-list empty-message";
-      savedPlansList.textContent = "No saved workout plans yet. Ask Coach Fox for a workout plan, then save it here.";
+      savedPlansList.className = "saved-plans-list";
+      savedPlansList.innerHTML = emptyStateHtml();
       return;
     }
 
@@ -78,19 +115,24 @@ document.addEventListener("DOMContentLoaded", function () {
     savedPlansList.innerHTML = plans.map(function (plan) {
       const exerciseCount = Array.isArray(plan.exercises) ? plan.exercises.length : 0;
       return `
-        <article class="saved-plan-card" data-plan-id="${window.appUtils.escapeHtml(plan.id)}">
+        <article class="saved-plan-card polished-plan-card" data-plan-id="${window.appUtils.escapeHtml(plan.id)}">
           <div class="saved-plan-card-top">
             <div>
-              <p class="mini-label">${window.appUtils.escapeHtml(plan.target || "workout")} · ${exerciseCount} exercises · saved ${window.appUtils.escapeHtml(formatDate(plan.savedAt))}</p>
+              <div class="saved-plan-meta-row">
+                <span class="plan-target-badge">${window.appUtils.escapeHtml(plan.target || "workout")}</span>
+                <span>${exerciseCount} exercises</span>
+                <span>saved ${window.appUtils.escapeHtml(formatDate(plan.savedAt))}</span>
+              </div>
               <h3>${window.appUtils.escapeHtml(plan.title || "Workout plan")}</h3>
             </div>
             <div class="saved-plan-actions">
-              <button type="button" class="button button-primary start-saved-plan-button">Start this workout</button>
+              <button type="button" class="button button-primary start-saved-plan-button">Start workout</button>
               <button type="button" class="button button-danger delete-saved-plan-button">Delete</button>
             </div>
           </div>
+          ${formatExercisePreview(plan.exercises)}
           <details class="saved-plan-details">
-            <summary>View plan details</summary>
+            <summary>View full plan</summary>
             <div class="saved-plan-sections">
               ${formatSection("Warm-up", plan.warmup)}
               ${formatSection("Workout", plan.exercises)}

@@ -3082,3 +3082,120 @@ textarea:focus {
     justify-content: flex-start;
   }
 }
+
+/* Workout Plans polish */
+.saved-plans-empty-card {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  padding: clamp(24px, 5vw, 40px);
+  border: 1px dashed rgba(255, 122, 26, 0.35);
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at 94% 6%, rgba(255, 215, 107, 0.26), transparent 34%),
+    radial-gradient(circle at 8% 96%, rgba(98, 188, 255, 0.18), transparent 34%),
+    rgba(255, 255, 255, 0.74);
+  box-shadow: 0 16px 34px rgba(46, 57, 89, 0.08);
+}
+
+.saved-plans-empty-card h3 {
+  margin: 0;
+  color: #172033;
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+}
+
+.saved-plans-empty-card p {
+  max-width: 560px;
+  margin: 0;
+  color: var(--muted);
+  font-weight: 850;
+}
+
+.polished-plan-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.polished-plan-card::before {
+  position: absolute;
+  inset: -70px -80px auto auto;
+  width: 170px;
+  height: 170px;
+  content: "";
+  border-radius: 999px;
+  background: rgba(255, 215, 107, 0.2);
+}
+
+.saved-plan-card-top,
+.plan-exercise-preview,
+.saved-plan-details {
+  position: relative;
+  z-index: 1;
+}
+
+.saved-plan-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  color: var(--muted);
+  font-size: 0.83rem;
+  font-weight: 900;
+}
+
+.plan-target-badge {
+  display: inline-flex;
+  padding: 7px 11px;
+  border-radius: 999px;
+  color: #8b4300;
+  background: rgba(255, 215, 107, 0.28);
+  font-size: 0.74rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.plan-exercise-preview {
+  display: grid;
+  gap: 8px;
+  margin: 16px 0 6px;
+}
+
+.preview-exercise-row,
+.preview-more {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 11px 13px;
+  border: 1px solid rgba(38, 49, 71, 0.07);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.68);
+  color: #233048;
+  font-weight: 850;
+}
+
+.preview-exercise-row strong {
+  color: #172033;
+  white-space: nowrap;
+}
+
+.preview-more {
+  justify-content: center;
+  color: #8b4300;
+  background: rgba(255, 215, 107, 0.18);
+  font-weight: 950;
+}
+
+.empty-preview {
+  color: var(--muted);
+  font-weight: 850;
+}
+
+@media (max-width: 640px) {
+  .preview-exercise-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
+}
